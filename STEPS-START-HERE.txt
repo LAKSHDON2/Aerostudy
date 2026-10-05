@@ -28,12 +28,8 @@ In the Git Bash window, paste this and press Enter:
 ----------------------------------------------------
 STEP 3 - Create the repo on GitHub (browser)
 ----------------------------------------------------
-1. Go to  https://github.com/new
-2. Repository name:  study-web
-3. Click  Public
-4. Leave every checkbox UNticked (no README, no .gitignore)
-5. Click the green  Create repository  button
-6. If GitHub shows a page of commands, ignore it completely.
+ALREADY DONE! Your repo is created. Its name is:  Aerostudy
+(Don't create a second one - we use this one.)
 
 ----------------------------------------------------
 STEP 4 - Send it up (2 commands)
@@ -41,7 +37,7 @@ STEP 4 - Send it up (2 commands)
 Back in the Git Bash window, paste BOTH lines together
 and press Enter:
 
-  git remote add origin https://github.com/LAKSHDON2/study-web.git
+  git remote set-url origin https://github.com/LAKSHDON2/Aerostudy.git
   git push -u origin main
 
 - A browser window pops up -> click "Authorize" / "Sign in".
@@ -51,17 +47,17 @@ and press Enter:
 ----------------------------------------------------
 STEP 5 - Turn on the website (browser)
 ----------------------------------------------------
-1. Go to  https://github.com/LAKSHDON2/study-web/settings/pages
+1. Go to  https://github.com/LAKSHDON2/Aerostudy/settings/pages
 2. Under "Build and deployment" -> Source:
    choose  GitHub Actions
 3. Wait 2-3 minutes. Watch the little circles turn to
    green ticks here:
-   https://github.com/LAKSHDON2/study-web/actions
+   https://github.com/LAKSHDON2/Aerostudy/actions
 
 ----------------------------------------------------
 YOUR WEBSITE ADDRESS (after green ticks)
 ----------------------------------------------------
-https://lakshdon2.github.io/study-web/
+https://lakshdon2.github.io/Aerostudy/
 
 ----------------------------------------------------
 AFTER ANY CHANGE I MAKE LATER (update loop)
