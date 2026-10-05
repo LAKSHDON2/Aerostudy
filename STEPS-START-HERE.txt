@@ -1,0 +1,83 @@
+====================================================
+ DEPLOY YOUR STUDY APP - ONLY 3 STEPS LEFT
+====================================================
+
+ALREADY DONE FOR YOU (don't redo these):
+  [x] Git is installed on your PC
+  [x] Your git name + email are set
+  [x] First save (commit) of your project is made
+
+----------------------------------------------------
+STEP 1 - Open the RIGHT window
+----------------------------------------------------
+1. Press the Windows key
+2. Type:  Git Bash
+3. Press Enter
+   (A black/white window opens. THAT is where git works.
+    CMD and PowerShell will say "git not found" - ignore them.)
+
+----------------------------------------------------
+STEP 2 - Go to your project folder
+----------------------------------------------------
+In the Git Bash window, paste this and press Enter:
+
+  cd "/c/Users/proud/Offline Documents/Applicatiojnas/StudyBot"
+
+(No message should appear. That's good.)
+
+----------------------------------------------------
+STEP 3 - Create the repo on GitHub (browser)
+----------------------------------------------------
+1. Go to  https://github.com/new
+2. Repository name:  study-web
+3. Click  Public
+4. Leave every checkbox UNticked (no README, no .gitignore)
+5. Click the green  Create repository  button
+6. If GitHub shows a page of commands, ignore it completely.
+
+----------------------------------------------------
+STEP 4 - Send it up (2 commands)
+----------------------------------------------------
+Back in the Git Bash window, paste BOTH lines together
+and press Enter:
+
+  git remote add origin https://github.com/LAKSHDON2/study-web.git
+  git push -u origin main
+
+- A browser window pops up -> click "Authorize" / "Sign in".
+- You may see text climbing the screen for ~30 seconds. Normal.
+- When it stops with no red "error"/"fatal" text = success.
+
+----------------------------------------------------
+STEP 5 - Turn on the website (browser)
+----------------------------------------------------
+1. Go to  https://github.com/LAKSHDON2/study-web/settings/pages
+2. Under "Build and deployment" -> Source:
+   choose  GitHub Actions
+3. Wait 2-3 minutes. Watch the little circles turn to
+   green ticks here:
+   https://github.com/LAKSHDON2/study-web/actions
+
+----------------------------------------------------
+YOUR WEBSITE ADDRESS (after green ticks)
+----------------------------------------------------
+https://lakshdon2.github.io/study-web/
+
+----------------------------------------------------
+AFTER ANY CHANGE I MAKE LATER (update loop)
+----------------------------------------------------
+Open Git Bash, paste these 3 lines (Enter after each):
+
+  cd "/c/Users/proud/Offline Documents/Applicatiojnas/StudyBot"
+  git add .
+  git commit -m "update" && git push
+
+====================================================
+ TROUBLESHOOTING
+====================================================
+"remote origin already exists" -> harmless, skip that line,
+  just run:  git push -u origin main
+"support for password authentication was removed" ->
+  the login popup was closed. Run:  git push -u origin main
+  and let the popup finish.
+Anything else -> copy the error text and paste it to me.
