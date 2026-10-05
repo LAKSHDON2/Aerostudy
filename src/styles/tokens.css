@@ -1,0 +1,121 @@
+/* ─── Aurora-glass design tokens ──────────────────────────────────────────
+   Dark is the default theme. [data-theme='light'] overrides below.
+   Palette: deep space blues + electric cyan→violet accents. */
+
+:root,
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  /* Backdrop gradient stops */
+  --bg-0: #04060d;
+  --bg-1: #070c18;
+  --bg-2: #0c1226;
+
+  /* Aurora blobs (drift slowly behind the glass) */
+  --aurora-1: rgba(56, 189, 248, 0.16);   /* cyan   */
+  --aurora-2: rgba(139, 92, 246, 0.14);   /* violet */
+  --aurora-3: rgba(45, 212, 191, 0.10);   /* teal   */
+
+  /* Glass surfaces */
+  --glass-bg: rgba(13, 20, 40, 0.58);
+  --glass-bg-strong: rgba(11, 17, 36, 0.84);
+  --glass-bg-soft: rgba(18, 27, 52, 0.36);
+  --glass-border: rgba(126, 168, 255, 0.16);
+  --glass-border-strong: rgba(126, 168, 255, 0.30);
+  --glass-highlight: rgba(255, 255, 255, 0.13);
+  --glass-shadow: 0 10px 36px rgba(1, 4, 14, 0.6), 0 2px 8px rgba(1, 4, 14, 0.4);
+  --glass-inner: inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  --glass-inner-strong: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+
+  /* Text */
+  --text-1: #f2f5ff;
+  --text-2: rgba(224, 232, 255, 0.74);
+  --text-3: rgba(196, 208, 244, 0.46);
+
+  /* Accents */
+  --accent: #6ee7ff;
+  --accent-2: #a78bfa;
+  --accent-3: #f0abfc;
+  --accent-soft: rgba(110, 231, 255, 0.13);
+  --accent-grad: linear-gradient(120deg, var(--accent), var(--accent-2) 55%, var(--accent-3));
+  --glow: 0 0 22px rgba(110, 231, 255, 0.28);
+  --success: #34d399;
+  --warn: #fbbf24;
+  --danger: #fb7185;
+
+  /* Priority badges */
+  --prio-core: #7dd3fc;
+  --prio-high: #c4b5fd;
+  --prio-medium: #94a3b8;
+
+  /* Week chips */
+  --chip-bg: rgba(110, 231, 255, 0.11);
+  --chip-text: #9fdcff;
+
+  /* Canvas */
+  --canvas-bg:
+    radial-gradient(1100px 700px at 12% -8%, var(--aurora-1) 0%, transparent 60%),
+    radial-gradient(1000px 640px at 88% 12%, var(--aurora-2) 0%, transparent 55%),
+    radial-gradient(900px 700px at 55% 115%, var(--aurora-3) 0%, transparent 60%),
+    linear-gradient(180deg, var(--bg-1) 0%, var(--bg-0) 100%);
+  --node-label: rgba(238, 242, 255, 0.92);
+
+  /* Type */
+  --font-display: 'Sora', 'Inter', system-ui, sans-serif;
+
+  /* Motion */
+  --ease-fluid: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 0.18s;
+  --dur-med: 0.32s;
+  --dur-slow: 0.6s;
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+
+  --bg-0: #e9eef8;
+  --bg-1: #f4f7fc;
+  --bg-2: #ffffff;
+
+  --aurora-1: rgba(14, 165, 233, 0.14);
+  --aurora-2: rgba(139, 92, 246, 0.12);
+  --aurora-3: rgba(20, 184, 166, 0.10);
+
+  --glass-bg: rgba(255, 255, 255, 0.60);
+  --glass-bg-strong: rgba(255, 255, 255, 0.86);
+  --glass-bg-soft: rgba(255, 255, 255, 0.42);
+  --glass-border: rgba(20, 50, 110, 0.11);
+  --glass-border-strong: rgba(20, 50, 110, 0.22);
+  --glass-highlight: rgba(255, 255, 255, 0.95);
+  --glass-shadow: 0 10px 32px rgba(35, 60, 120, 0.13), 0 2px 6px rgba(35, 60, 120, 0.08);
+  --glass-inner: inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  --glass-inner-strong: inset 0 1px 0 rgba(255, 255, 255, 1);
+
+  --text-1: #0e1626;
+  --text-2: rgba(28, 40, 70, 0.74);
+  --text-3: rgba(40, 55, 90, 0.46);
+
+  --accent: #0284c7;
+  --accent-2: #7c3aed;
+  --accent-3: #c026d3;
+  --accent-soft: rgba(2, 132, 199, 0.10);
+  --glow: 0 0 18px rgba(2, 132, 199, 0.18);
+  --success: #0d9488;
+  --warn: #b45309;
+  --danger: #dc2626;
+
+  --prio-core: #0369a1;
+  --prio-high: #6d28d9;
+  --prio-medium: #64748b;
+
+  --chip-bg: rgba(2, 132, 199, 0.09);
+  --chip-text: #0a5c9e;
+
+  --canvas-bg:
+    radial-gradient(1100px 700px at 12% -8%, var(--aurora-1) 0%, transparent 60%),
+    radial-gradient(1000px 640px at 88% 12%, var(--aurora-2) 0%, transparent 55%),
+    radial-gradient(900px 700px at 55% 115%, var(--aurora-3) 0%, transparent 60%),
+    linear-gradient(180deg, var(--bg-1) 0%, var(--bg-0) 100%);
+  --node-label: rgba(14, 22, 38, 0.92);
+}

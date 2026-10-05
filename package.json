@@ -1,0 +1,38 @@
+{
+  "name": "aero2687-study-web",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "AERO2687 Introduction to Aerospace Engineering — interactive liquid-glass 3D formula & variable web (RMIT)",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "deploy": "npm run build && gh-pages -d dist"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "3d-force-graph": "1.73.2",
+    "jszip": "^3.10.2",
+    "katex": "0.16.11",
+    "pdfjs-dist": "^4.10.38",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "three": "^0.186.1",
+    "zustand": "^5.0.2"
+  },
+  "devDependencies": {
+    "@types/katex": "0.16.7",
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.5",
+    "@types/three": "0.166.0",
+    "gh-pages": "6.2.0",
+    "typescript": "5.6.3",
+    "vite": "5.4.10",
+    "vitest": "2.1.8"
+  }
+}
