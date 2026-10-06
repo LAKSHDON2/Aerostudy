@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useApp } from '../../state/store'
 import type { Subject } from '../../data/schema'
+import { CaretDown, Check, Copy, Warning } from '@phosphor-icons/react'
 import { PriorityChip, RichText, SourceChip, Tex, WeekChips } from '../../components/common'
 import { buildShareUrl } from '../../services/deepLink'
 
@@ -11,7 +12,7 @@ function UnitToggle({ si, other, typical }: { si: string; other?: string[]; typi
     <div className="toggle-card">
       <button className={`toggle-card__head${open ? ' open' : ''}`} onClick={() => setOpen(!open)}>
         <span>Units &amp; typical values</span>
-        <span className="chev">▾</span>
+        <span className="chev"><CaretDown size={12} /></span>
       </button>
       {open && (
         <div className="toggle-card__body">
@@ -63,10 +64,11 @@ function CopyLinkButton({ kind, id }: { kind: 'formula' | 'variable'; id: string
       window.setTimeout(() => setState('idle'), 1800)
     })
   }
-  const label = state === 'copied' ? '✓ Link copied' : state === 'failed' ? '⚠ Copy failed' : '🔗 Copy link'
   return (
     <button className="btn copy-link-btn" title="Copy a link that opens this exact item" onClick={onCopy}>
-      {label}
+      {state === 'copied' ? (<><Check size={13} weight="bold" /> Link copied</>)
+        : state === 'failed' ? (<><Warning size={13} weight="fill" /> Copy failed</>)
+        : (<><Copy size={13} /> Copy link</>)}
     </button>
   )
 }
@@ -193,7 +195,7 @@ export function DetailContent({ subject, windowKey, kind, id }: { subject: Subje
           className={`btn mastered-btn${isMastered ? ' mastered-btn--on' : ''}`}
           onClick={() => toggleMastered(id)}
         >
-          {isMastered ? '✓ Mastered' : 'Mark as mastered'}
+          {isMastered ? (<><Check size={13} weight="bold" /> Mastered</>) : 'Mark as mastered'}
         </button>
       </div>
     </>

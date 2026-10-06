@@ -1,27 +1,28 @@
+import { Key, Lightning, ShieldCheck, Table, Wrench } from '@phosphor-icons/react'
 import { useApp } from '../../state/store'
 import { PROVIDERS, type ProviderId } from '../../services/ai'
 
 const FREE_ROWS: { provider: string; what: string; limit: string; link?: string }[] = [
-  { provider: 'Google Gemini', what: 'AI Studio API keys', limit: 'Free tier with daily request caps — the best free start for students', link: 'https://aistudio.google.com/apikey' },
+  { provider: 'Google Gemini', what: 'AI Studio API keys', limit: 'Free tier with daily request caps; the best free start for students', link: 'https://aistudio.google.com/apikey' },
   { provider: 'OpenRouter', what: 'Models tagged ":free"', limit: 'Free community models (e.g. deepseek/deepseek-chat-v1:free) with daily limits', link: 'https://openrouter.ai/models?q=free' },
-  { provider: 'Ollama (custom)', what: 'Your own PC, 100% offline', limit: 'Free forever — no internet, no key; needs an 8 GB+ PC', link: 'https://ollama.com/download' },
+  { provider: 'Ollama (custom)', what: 'Your own PC, 100% offline', limit: 'Free forever: no internet, no key; needs an 8 GB+ PC', link: 'https://ollama.com/download' },
 ]
 
 const STEPS: { id: ProviderId; title: string; steps: string[]; note?: string }[] = [
   {
     id: 'gemini',
-    title: 'Google Gemini — free tier (recommended first)',
+    title: 'Google Gemini (free tier, recommended first)',
     steps: [
       'Open aistudio.google.com/apikey and sign in with any Google account.',
       'Click "Create API key" → copy the key (starts with AIza…).',
-      'Back here: ⚙ AI settings → Provider: Google Gemini → paste the key.',
+      'Back here: open AI settings → Provider: Google Gemini → paste the key.',
       'Model stays gemini-2.5-flash (fast + generous free tier) → "Test connection".',
     ],
     note: 'Free tier = a few requests per minute and a daily cap. Perfect for study nights; add a paid provider as fallback when exams get serious.',
   },
   {
     id: 'openrouter',
-    title: 'OpenRouter — one key, hundreds of models (some free)',
+    title: 'OpenRouter: one key, hundreds of models (some free)',
     steps: [
       'Create an account at openrouter.ai (GitHub login works).',
       'openrouter.ai/settings/keys → "Create key" → copy it (sk-or-…).',
@@ -53,7 +54,7 @@ const STEPS: { id: ProviderId; title: string; steps: string[]; note?: string }[]
     title: 'Custom / fully local (Ollama, LM Studio)',
     steps: [
       'Install Ollama (ollama.com/download) and run:  ollama pull llama3.1',
-      'It serves an OpenAI-compatible API at http://localhost:11434/v1 — no key needed.',
+      'It serves an OpenAI-compatible API at http://localhost:11434/v1. No key needed.',
       'Here: Provider: Custom → Base URL http://localhost:11434/v1 → Fetch list → pick the model.',
     ],
     note: '100% free and offline. The tutor works on a plane; only this browser holds your data.',
@@ -68,22 +69,22 @@ export default function HelpView() {
       <div className="help-inner">
         <h1 className="help-title">Help & API keys</h1>
         <p className="help-sub">
-          The AI tutor talks straight from <strong>your browser</strong> to the provider you choose — there is no server in
-          the middle, and your key is stored only on this device. One free key is enough to start.
+          The AI tutor talks straight from <strong>your browser</strong> to the provider you choose. There is no server
+          in the middle, and your key is stored only on this device. One free key is enough to start.
         </p>
 
         <div className="help-card glass">
-          <h2>⚡ Fast start (3 minutes, free)</h2>
+          <h2><Lightning size={15} weight="fill" /> Fast start (3 minutes, free)</h2>
           <ol className="help-ol">
             <li>Open <a href="https://aistudio.google.com/apikey" target="_blank" rel="noreferrer">aistudio.google.com/apikey</a> and sign in with any Google account.</li>
             <li><strong>Create API key</strong> → copy it.</li>
             <li>Click the button below → paste it under <strong>Google Gemini</strong> → <strong>Test connection</strong>. Done.</li>
           </ol>
-          <button className="btn btn--hero" onClick={openSettings}>Open AI settings ⚙</button>
+          <button className="btn btn--hero" onClick={openSettings}>Open AI settings</button>
         </div>
 
         <div className="help-card glass">
-          <h2>🆓 Free options compared</h2>
+          <h2><Table size={15} /> Free options compared</h2>
           <table className="help-table">
             <thead><tr><th>Provider</th><th>What</th><th>Limit</th></tr></thead>
             <tbody>
@@ -99,7 +100,7 @@ export default function HelpView() {
         </div>
 
         <div className="help-card glass">
-          <h2>🔑 Step-by-step for every provider</h2>
+          <h2><Key size={15} /> Step-by-step for every provider</h2>
           {STEPS.map((s) => (
             <div key={s.id} className="help-provider">
               <h3>{s.title}</h3>
@@ -117,24 +118,24 @@ export default function HelpView() {
         </div>
 
         <div className="help-card glass">
-          <h2>🛟 Fallback chain (no more dead study nights)</h2>
+          <h2><ShieldCheck size={15} /> Fallback chain (no more dead study nights)</h2>
           <p>
-            In <strong>⚙ AI settings</strong> you can enable the fallback chain: when your main provider rate-limits or
+            In <strong>AI settings</strong> you can enable the fallback chain: when your main provider rate-limits or
             errors, the tutor automatically retries your other configured providers in your chosen order. The bubble tells
-            you which provider answered. Usage is counted locally in Settings — an estimate only; real billing is at the
+            you which provider answered. Usage is counted locally in Settings, as an estimate only; real billing is at the
             provider.
           </p>
         </div>
 
         <div className="help-card glass">
-          <h2>🩺 Troubleshooting</h2>
+          <h2><Wrench size={15} /> Troubleshooting</h2>
           <table className="help-table">
             <thead><tr><th>Symptom</th><th>Fix</th></tr></thead>
             <tbody>
               <tr><td>"Key rejected"</td><td>Re-copy the key; check credit/quota at the provider's console; check you picked the matching provider row.</td></tr>
               <tr><td>"Rate limited / out of quota"</td><td>Wait a minute (free tiers), or let the fallback chain hand over to another provider.</td></tr>
               <tr><td>"Network request blocked"</td><td>Custom/local: is the gateway running? Does it allow browser calls (CORS)? Ollama needs <code>OLLAMA_ORIGINS=*</code> on some setups.</td></tr>
-              <tr><td>Key lost after clearing the browser</td><td>Use ⚙ → Backup &amp; restore to move everything between browsers/devices.</td></tr>
+              <tr><td>Key lost after clearing the browser</td><td>Use AI settings → Backup &amp; restore to move everything between browsers/devices.</td></tr>
             </tbody>
           </table>
         </div>

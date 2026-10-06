@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Exam, Lightning } from '@phosphor-icons/react'
 import { useApp } from '../../state/store'
 import type { Subject } from '../../data/schema'
 import { buildSession, scoreSession } from '../../services/quiz'
@@ -35,22 +36,22 @@ export function QuizView({ subject }: { subject: Subject }) {
     return (
       <div className="quiz-wrap scroll-glass">
         <div className="quiz-inner">
-          <div className="section-label">Test yourself — scores are saved on this device</div>
+          <div className="section-label">Test yourself (scores stay on this device)</div>
           <div className="mode-grid">
             <button className="mode-card glass anim-rise" onClick={() => startSession(buildSession(subject, 'quick10'))}>
-              <div className="mode-card__title">⚡ Quick 10</div>
+              <div className="mode-card__title"><Lightning size={15} weight="fill" /> Quick 10</div>
               <div className="mode-card__desc">Mixed sprint: handwritten exam questions plus auto-generated symbol and unit drills.</div>
             </button>
             <button className="mode-card glass anim-rise" onClick={() => startSession(buildSession(subject, 'mock'))}>
-              <div className="mode-card__title">📝 Mock 20</div>
-              <div className="mode-card__desc">Longer set weighted toward ★ Core Appendix and practice-exam material.</div>
+              <div className="mode-card__title"><Exam size={15} /> Mock 20</div>
+              <div className="mode-card__desc">Longer set weighted toward core Appendix formulas and practice-exam material.</div>
             </button>
           </div>
           <div className="section-label" style={{ marginTop: 6 }}>Week focus</div>
           <div className="filters">
             <select className="input" value={weekPick} onChange={(e) => setWeekPick(Number(e.target.value))}>
               {subject.weeks.filter((w) => !w.locked).map((w) => (
-                <option key={w.number} value={w.number}>Week {w.number} — {w.title}</option>
+                <option key={w.number} value={w.number}>Week {w.number} · {w.title}</option>
               ))}
             </select>
             <button className="btn btn--primary" onClick={() => startSession(buildSession(subject, 'week', weekPick))}>
@@ -83,7 +84,7 @@ export function QuizView({ subject }: { subject: Subject }) {
             <div className="score-hero__num">{pct}%</div>
             <div style={{ fontWeight: 700 }}>{score.score} of {score.total} correct</div>
             <div className="prose">
-              {pct >= 85 ? 'Exam-ready. Keep this pace.' : pct >= 60 ? 'Solid — drill the misses once more.' : 'Revisit the ★ Core formulas, then retry.'}
+              {pct >= 85 ? 'Exam-ready. Keep this pace.' : pct >= 60 ? 'Solid. Drill the misses once more.' : 'Revisit the core formulas, then retry.'}
             </div>
             <div style={{ display: 'flex', gap: 10 }}>
               <button

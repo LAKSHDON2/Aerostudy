@@ -1,4 +1,5 @@
 import { lazy, Suspense, useMemo, useRef } from 'react'
+import { Airplane, Flask, Gear, MagnifyingGlass, Question, Sun, Moon } from '@phosphor-icons/react'
 import { useApp } from './state/store'
 import { getSubject } from './data/registry'
 import { search } from './services/search'
@@ -44,17 +45,17 @@ export default function App() {
     <div className="app">
       <header className="toolbar glass glass--strong">
         <button className="brand brand--btn" onClick={() => setView('home')} title="Home dashboard" aria-label="Home">
-          <span className="brand__logo">✈</span>
+          <span className="brand__logo"><Airplane size={19} weight="fill" /></span>
           <span className="brand__code">AERO2687</span>
           <span className="brand__sub">Aerospace Study Web</span>
         </button>
 
         <div className="search-wrap">
-          <span className="icon">⌕</span>
+          <span className="icon"><MagnifyingGlass size={15} /></span>
           <input
             ref={searchRef}
             className="input"
-            placeholder="Search formulas & variables — try “rho”, “buckling”, “W4”…"
+            placeholder="Search formulas & variables. Try “rho”, “buckling”, “W4”…"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={(e) => {
@@ -109,13 +110,13 @@ export default function App() {
           ))}
         </div>
 
-        <button className="btn btn--icon" onClick={openWorksheet} title="AI worksheet generator — quiz with solutions" aria-label="AI worksheet generator">🧪</button>
-        <button className="btn btn--icon" onClick={() => setView('help')} title="Help & API keys" aria-label="Help">❓</button>
-        <button className="btn btn--icon" onClick={() => useApp.getState().openSettings()} title="AI settings — API keys & models" aria-label="AI settings">
-          ⚙
+        <button className="btn btn--icon" onClick={openWorksheet} title="AI worksheet generator: quiz with solutions" aria-label="AI worksheet generator"><Flask size={17} /></button>
+        <button className="btn btn--icon" onClick={() => setView('help')} title="Help & API keys" aria-label="Help"><Question size={17} weight="bold" /></button>
+        <button className="btn btn--icon" onClick={() => useApp.getState().openSettings()} title="AI settings: API keys & models" aria-label="AI settings">
+          <Gear size={17} />
         </button>
         <button className="btn btn--icon" onClick={toggleTheme} title="Toggle dark / light" aria-label="Toggle theme">
-          {theme === 'dark' ? '☀' : '☾'}
+          {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
         </button>
       </header>
 

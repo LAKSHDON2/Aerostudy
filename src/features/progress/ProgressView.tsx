@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useApp } from '../../state/store'
 import type { Subject } from '../../data/schema'
 import { clearSubjectProgress } from '../../services/storage'
@@ -26,6 +27,7 @@ function Ring({ pct, label }: { pct: number; label: string }) {
 }
 
 export function ProgressView({ subject }: { subject: Subject }) {
+  const [confirmReset, setConfirmReset] = useState(false)
   const mastered = useApp((s) => s.mastered)
   const attempts = useApp((s) => s.attempts)
   const subjectId = useApp((s) => s.subjectId)
@@ -53,12 +55,12 @@ export function ProgressView({ subject }: { subject: Subject }) {
         <div className="stat-strip">
           <div className="stat-card glass"><div className="stat-card__num">{mastered.size}</div><div className="stat-card__label">Items mastered</div></div>
           <div className="stat-card glass"><div className="stat-card__num">{totalItems}</div><div className="stat-card__label">Total items</div></div>
-          <div className="stat-card glass"><div className="stat-card__num">{attempts.length}</div><div className="stat-card__label">Quiz attempts</div></div>
+          <div className="stat-card glass"><div className="stat-card__num">{attempts.length}</div><div className="stat-card__label">{attempts.length === 1 ? 'Quiz attempt' : 'Quiz attempts'}</div></div>
           <div className="stat-card glass"><div className="stat-card__num">{Math.round(bestPct)}%</div><div className="stat-card__label">Best score</div></div>
           <div className="stat-card glass"><div className="stat-card__num">{Math.round(avgPct)}%</div><div className="stat-card__label">Average</div></div>
         </div>
 
-        <div className="section-label">Progress by week — mark formulas & variables as mastered to fill these</div>
+        <div className="section-label">Progress by week. Mark formulas and variables as mastered to fill these</div>
         <div className="ring-row">
           {weeks.map((w) => {
             const total = weekItems(w.number)
@@ -81,18 +83,29 @@ export function ProgressView({ subject }: { subject: Subject }) {
           </>
         )}
 
-        <button
-          className="btn"
-          style={{ alignSelf: 'flex-start', color: 'var(--danger)' }}
-          onClick={() => {
-            if (confirm('Reset all local progress, quiz scores and camera position?')) {
-              clearSubjectProgress(subjectId)
-              location.reload()
-            }
-          }}
-        >
-          Reset local progress
-        </button>
+        {confirmReset ? (
+          <div className="confirm-row" style={{ alignSelf: 'flex-start' }}>
+            <span>Reset all local progress, quiz scores and camera position?</span>
+            <button
+              className="btn btn--danger btn--sm"
+              onClick={() => {
+                clearSubjectProgress(subjectId)
+                location.reload()
+              }}
+            >
+              Reset
+            </button>
+            <button className="btn btn--sm" onClick={() => setConfirmReset(false)}>Cancel</button>
+          </div>
+        ) : (
+          <button
+            className="btn"
+            style={{ alignSelf: 'flex-start', color: 'var(--danger)' }}
+            onClick={() => setConfirmReset(true)}
+          >
+            Reset local progress
+          </button>
+        )}
       </div>
     </div>
   )

@@ -8,13 +8,24 @@ import { addUsage } from '../../services/aiRun'
 import { buildSystemPrompt } from '../../services/aiContext'
 import { loadProfile, recordSession } from '../../services/profile'
 import { listChats, putChat, type StoredChat, type UiMessage } from '../../services/fileStore'
+import {
+  AirplaneTilt,
+  Lightbulb,
+  ListChecks,
+  NotePencil,
+  PaperPlaneRight,
+  Stop,
+  Target,
+  Warning,
+  X,
+} from '@phosphor-icons/react'
 
 const AGENT_TITLE = 'Tutor agent'
 const STARTERS = [
-  { label: '🧪 Make me a quiz', kind: 'worksheet' as const },
-  { label: '📝 Make a worksheet', kind: 'worksheet' as const },
-  { label: '🎯 What should I revise?', kind: 'chat' as const, text: 'Based on what you know about me and the course, what should I revise next and why? Keep it to 3 bullets.' },
-  { label: '💡 Explain a topic', kind: 'chat' as const, text: 'Pick the most exam-important concept I haven\u2019t mastered yet and explain it simply with one worked example.' },
+  { label: 'Make me a quiz', Icon: ListChecks, kind: 'worksheet' as const },
+  { label: 'Make a worksheet', Icon: NotePencil, kind: 'worksheet' as const },
+  { label: 'What should I revise?', Icon: Target, kind: 'chat' as const, text: 'Based on what you know about me and the course, what should I revise next and why? Keep it to 3 bullets.' },
+  { label: 'Explain a topic', Icon: Lightbulb, kind: 'chat' as const, text: 'Pick the most exam-important concept I haven\u2019t mastered yet and explain it simply with one worked example.' },
 ]
 
 const uuid = () =>
@@ -147,17 +158,17 @@ export default function TutorOrb({ subject }: { subject: Subject }) {
           <div className="orb-panel__head">
             <span className="orb-panel__dot" />
             <span className="orb-panel__title">Study agent</span>
-            <button className="win__btn" onClick={() => setOpen(false)} aria-label="Close agent">✕</button>
+            <button className="win__btn" onClick={() => setOpen(false)} aria-label="Close agent"><X size={14} /></button>
           </div>
 
           <div className="orb-panel__msgs scroll-glass" ref={scrollRef}>
             {messages.length === 0 && (
               <div className="orb-empty">
-                <div className="orb-empty__t">Hey 👋 I learn how YOU study.</div>
-                <p>Tell me your goal and weak spots — or pick one:</p>
+                <div className="orb-empty__t">Hi. I learn how you study.</div>
+                <p>Tell me your goal and weak spots, or pick one:</p>
                 <div className="orb-starters">
                   {STARTERS.map((st) => (
-                    <button key={st.label} className="chip chat-starter" onClick={() => quickAction(st)}>{st.label}</button>
+                    <button key={st.label} className="chip chat-starter" onClick={() => quickAction(st)}><st.Icon size={13} />{st.label}</button>
                   ))}
                 </div>
               </div>
@@ -178,7 +189,7 @@ export default function TutorOrb({ subject }: { subject: Subject }) {
           </div>
 
           {!configured && (
-            <button className="chat-banner" onClick={openSettings}>⚠ Add your API key to start</button>
+            <button className="chat-banner" onClick={openSettings}><Warning size={14} weight="fill" /> Add your API key to start</button>
           )}
           <div className="orb-composer">
             <textarea
@@ -195,8 +206,8 @@ export default function TutorOrb({ subject }: { subject: Subject }) {
               }}
             />
             {busy
-              ? <button className="btn orb-send orb-send--stop" onClick={() => abortRef.current?.abort()}>■</button>
-              : <button className="btn orb-send" onClick={() => void send(input)} disabled={!input.trim()}>➤</button>}
+              ? <button className="btn orb-send orb-send--stop" onClick={() => abortRef.current?.abort()} title="Stop generating"><Stop size={13} weight="fill" /></button>
+              : <button className="btn orb-send" onClick={() => void send(input)} disabled={!input.trim()} title="Send"><PaperPlaneRight size={15} /></button>}
           </div>
         </div>
       )}
@@ -207,7 +218,7 @@ export default function TutorOrb({ subject }: { subject: Subject }) {
         title="Your study agent"
         aria-label="Open tutor agent"
       >
-        {open ? '✕' : '✈'}
+        {open ? <X size={18} weight="bold" /> : <AirplaneTilt size={20} weight="fill" />}
       </button>
     </>
   )

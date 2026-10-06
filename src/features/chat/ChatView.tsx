@@ -19,6 +19,17 @@ import {
   type UiMessage,
 } from '../../services/fileStore'
 import { RichText } from '../../components/common'
+import {
+  AirplaneTilt,
+  ArrowRight,
+  Check,
+  List,
+  PaperPlaneRight,
+  Plus,
+  Stop,
+  Target,
+  Warning,
+} from '@phosphor-icons/react'
 
 const subjectId = 'aero2687'
 
@@ -58,7 +69,7 @@ function ProfileCard({ subject, initial }: { subject: Subject; initial: LearnerP
           value={p.examDate}
           onChange={(e) => save({ examDate: e.target.value })}
         />
-        {days !== null && <span className="field__hint">{days === 0 ? 'Exam is today — good luck!' : `Exam in ${days} day${days === 1 ? '' : 's'}.`}</span>}
+        {days !== null && <span className="field__hint">{days === 0 ? 'Exam is today. Good luck.' : `Exam in ${days} day${days === 1 ? '' : 's'}.`}</span>}
       </label>
       <div className="field">
         <span className="field__label">Tick what you find hard / feel solid in</span>
@@ -73,21 +84,21 @@ function ProfileCard({ subject, initial }: { subject: Subject; initial: LearnerP
                   title={weak ? 'Click to unset' : 'I find this hard'}
                   onClick={() => setP(toggleWeakTopic(subject.id, t.id))}
                 >
-                  {weak ? '⚠ ' : ''}{t.name}
+                  {weak ? (<><Warning size={12} weight="fill" /> {t.name}</>) : t.name}
                 </button>
                 <button
                   className={`chip profile-topic profile-topic--strong${strong ? ' profile-topic--strong-on' : ''}`}
                   title={strong ? 'Click to unset' : 'I feel solid here'}
                   onClick={() => setP(toggleStrongTopic(subject.id, t.id))}
                 >
-                  ✓
+                  <Check size={13} weight="bold" />
                 </button>
               </span>
             )
           })}
         </div>
       </div>
-      <p className="profile-hint">The tutor uses this in every reply — easier scaffolding on ⚠ topics, stretch questions on ✓ ones.</p>
+      <p className="profile-hint">The tutor uses this in every reply: gentler scaffolding on topics you flag as hard, stretch questions on ones you feel solid in.</p>
     </div>
   )
 }
@@ -249,7 +260,7 @@ export default function ChatView({ subject }: { subject: Subject }) {
         </label>
         <div className="section-label ctx-files-label">Files ({includedFiles.length} included)</div>
         <div className="ctx-files">
-          {files.length === 0 && <div className="ctx-empty">No files yet — add lecture slides or worksheets so the tutor can use them.</div>}
+          {files.length === 0 && <div className="ctx-empty">No files yet. Add lecture slides or worksheets so the tutor can use them.</div>}
           {files.map((f) => (
             <label key={f.id} className="ctx-row ctx-file" title={f.description || f.name}>
               <input type="checkbox" checked={f.included} onChange={() => void toggleFile(f)} />
@@ -260,14 +271,14 @@ export default function ChatView({ subject }: { subject: Subject }) {
             </label>
           ))}
         </div>
-        <button className="btn ctx-manage" onClick={() => setView('files')}>Manage files →</button>
+        <button className="btn ctx-manage" onClick={() => setView('files')}>Manage files <ArrowRight size={13} /></button>
         <div className="ctx-estimate">context ≈ {Math.max(1, Math.round(estChars / 1000))}k chars (~{Math.max(1, Math.round(estChars / 4000))}k tokens)</div>
       </aside>
 
       <div className="chat-main">
         <div className="chat-topbar">
-          <button className="btn btn--icon" onClick={() => setCtxOpen((v) => !v)} title="Toggle study context">☰</button>
-          <button className="btn btn--icon" onClick={() => setProfileOpen((v) => !v)} title="Personalise your tutor" aria-label="Personalise">🎯</button>
+          <button className="btn btn--icon" onClick={() => setCtxOpen((v) => !v)} title="Toggle study context" aria-label="Toggle study context"><List size={17} /></button>
+          <button className="btn btn--icon" onClick={() => setProfileOpen((v) => !v)} title="Personalise your tutor" aria-label="Personalise"><Target size={17} /></button>
           <div className="chat-title">{activeTitle}</div>
           <select className="input chat-hist" value={activeId ?? ''} onChange={(e) => switchChat(e.target.value)} aria-label="Chat history">
             <option value="">History…</option>
@@ -275,19 +286,19 @@ export default function ChatView({ subject }: { subject: Subject }) {
               <option key={c.id} value={c.id}>{c.title.slice(0, 44)}</option>
             ))}
           </select>
-          <button className="btn" onClick={newChat}>＋ New</button>
+          <button className="btn" onClick={newChat}><Plus size={14} /> New</button>
         </div>
 
-        {loadErr && <div className="files-status files-status--err">⚠ {loadErr}</div>}
+        {loadErr && <div className="files-status files-status--err"><Warning size={14} weight="fill" /> {loadErr}</div>}
 
         {profileOpen && <ProfileCard subject={subject} initial={profile} />}
 
         <div className="chat-msgs scroll-glass" ref={scrollRef}>
           {messages.length === 0 && !busy && (
             <div className="chat-empty glass anim-rise">
-              <div className="chat-empty__title">Your AERO2687 tutor is ready ✈</div>
+              <div className="chat-empty__title"><AirplaneTilt size={18} /> Your AERO2687 tutor is ready</div>
               <p className="chat-empty__sub">
-                It knows all 45 formulas, every variable, the ISA table and the exam radar — plus any files you include
+                It knows all 45 formulas, every variable, the ISA table and the exam radar, plus any files you include
                 on the right. Ask anything, or start with:
               </p>
               <div className="chat-starters">
@@ -320,14 +331,14 @@ export default function ChatView({ subject }: { subject: Subject }) {
 
         {!configured && (
           <button className="chat-banner" onClick={openSettings}>
-            ⚠ Add your API key to start — open AI settings (keys stay in this browser)
+            <Warning size={14} weight="fill" /> Add your API key to start: open AI settings (keys stay in this browser)
           </button>
         )}
         <div className="chat-composer glass glass--strong">
           <textarea
             className="input chat-input"
             rows={2}
-            placeholder={configured ? `Ask about lift, drag, structures… (${activeCfg.model || 'no model set'})` : 'Add your API key first — then ask anything'}
+            placeholder={configured ? `Ask about lift, drag, structures… (${activeCfg.model || 'no model set'})` : 'Add your API key first, then ask anything'}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {
@@ -338,8 +349,8 @@ export default function ChatView({ subject }: { subject: Subject }) {
             }}
           />
           {busy
-            ? <button className="btn chat-send chat-send--stop" onClick={stop} title="Stop generating">■ Stop</button>
-            : <button className="btn btn--hero chat-send" onClick={() => void send(input)} disabled={!input.trim()}>Send ➤</button>}
+            ? <button className="btn chat-send chat-send--stop" onClick={stop} title="Stop generating"><Stop size={13} weight="fill" /> Stop</button>
+            : <button className="btn btn--hero chat-send" onClick={() => void send(input)} disabled={!input.trim()}>Send <PaperPlaneRight size={15} /></button>}
         </div>
       </div>
     </div>

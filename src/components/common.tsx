@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { Star } from '@phosphor-icons/react'
 import katex from 'katex'
 
 /** KaTeX renderer with error resilience (bad input never crashes the UI). */
@@ -39,7 +40,7 @@ export function WeekChips({ weeks }: { weeks: number[] }) {
 }
 
 export function PriorityChip({ p }: { p: 'core' | 'high' | 'medium' }) {
-  return <span className={`chip chip--priority-${p}`}>{p === 'core' ? '★ Core' : p === 'high' ? 'High yield' : 'Support'}</span>
+  return <span className={`chip chip--priority-${p}`}>{p === 'core' ? (<><Star size={11} weight="fill" /> Core</>) : p === 'high' ? 'High yield' : 'Support'}</span>
 }
 
 const SOURCE_LABEL: Record<string, string> = {
@@ -57,7 +58,7 @@ export function MasterDot({ on, onClick, title }: { on: boolean; onClick: () => 
   return (
     <button
       className={`master-dot${on ? ' on' : ''}`}
-      title={title ?? (on ? 'Mastered — click to unmark' : 'Mark as mastered')}
+      title={title ?? (on ? 'Mastered. Click to unmark' : 'Mark as mastered')}
       aria-pressed={on}
       onClick={(e) => {
         e.stopPropagation()

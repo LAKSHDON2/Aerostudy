@@ -1,4 +1,12 @@
 import { useMemo, useState } from 'react'
+import {
+  ArrowCounterClockwise,
+  DownloadSimple,
+  Flask,
+  Printer,
+  Sparkle,
+  X,
+} from '@phosphor-icons/react'
 import type { Subject } from '../../data/schema'
 import { useApp } from '../../state/store'
 import { friendlyError } from '../../services/ai'
@@ -22,7 +30,7 @@ export default function WorksheetModal({ subject }: { subject: Subject }) {
   const close = useApp((s) => s.closeWorksheet)
   const openSettings = useApp((s) => s.openSettings)
   const weekOptions = useMemo(
-    () => subject.weeks.filter((w) => !w.locked).map((w) => ({ label: `Week ${w.number} — ${w.title}`, value: `Week ${w.number} (${w.title})` })),
+    () => subject.weeks.filter((w) => !w.locked).map((w) => ({ label: `Week ${w.number} · ${w.title}`, value: `Week ${w.number} (${w.title})` })),
     [subject],
   )
 
@@ -133,8 +141,8 @@ ${ws.sections
     <div className="settings-overlay" onClick={close} role="presentation">
       <div className="settings-modal glass glass--strong scroll-glass anim-pop ws-modal" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="AI worksheet generator">
         <div className="settings-head">
-          <h2 className="settings-title">🧪 AI worksheet generator</h2>
-          <button className="win__btn" onClick={close} aria-label="Close">✕</button>
+          <h2 className="settings-title"><Flask size={17} /> AI worksheet generator</h2>
+          <button className="win__btn" onClick={close} aria-label="Close"><X size={14} /></button>
         </div>
 
         {stage === 'form' && (
@@ -168,11 +176,11 @@ ${ws.sections
             </label>
             <label className="ctx-row ws-sol-row">
               <input type="checkbox" checked={solutions} onChange={(e) => setSolutions(e.target.checked)} />
-              <span><strong>Include worked solutions</strong><em>full steps with units — hidden by default when printing? No: printed as an answer key</em></span>
+              <span><strong>Include worked solutions</strong><em>full steps with units, printed as an answer key</em></span>
             </label>
-            {error && <div className="settings-test settings-test--bad">✗ {error}</div>}
+            {error && <div className="settings-test settings-test--bad"><X size={14} weight="bold" /> {error}</div>}
             <div className="field__row settings-actions">
-              <button className="btn btn--hero" onClick={() => void generate()}>{configured ? '✨ Generate' : 'Add API key first'}</button>
+              <button className="btn btn--hero" onClick={() => void generate()}>{configured ? (<><Sparkle size={15} /> Generate</>) : 'Add API key first'}</button>
               <button className="btn" onClick={close}>Cancel</button>
             </div>
           </>
@@ -190,16 +198,16 @@ ${ws.sections
           <>
             <div className="field__row settings-actions ws-ready-actions">
               <span className="ws-stat">{ws.sections.length} sections · {ws.sections.reduce((n, s) => n + s.questions.length, 0)} questions · {ws.totalMarks} marks</span>
-              <button className="btn" onClick={print}>🖨 Print / PDF</button>
-              <button className="btn" onClick={download}>⬇ Download .md</button>
-              <button className="btn" onClick={reset}>↺ New</button>
+              <button className="btn" onClick={print}><Printer size={15} /> Print / PDF</button>
+              <button className="btn" onClick={download}><DownloadSimple size={15} /> Download .md</button>
+              <button className="btn" onClick={reset}><ArrowCounterClockwise size={15} /> New</button>
             </div>
             <div className="ws-preview">
               <h3 className="ws-title">{ws.title}</h3>
               {ws.meta && <div className="ws-meta">{ws.meta}</div>}
               {ws.sections.map((s) => (
                 <div key={s.letter} className="ws-section">
-                  <div className="ws-section__head">Section {s.letter} — {s.title}</div>
+                  <div className="ws-section__head">Section {s.letter} · {s.title}</div>
                   {s.intro && <div className="ws-section__intro">{s.intro}</div>}
                   {s.questions.map((q) => (
                     <div key={q.n} className="ws-q">

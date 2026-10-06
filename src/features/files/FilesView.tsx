@@ -1,5 +1,20 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
+  CaretDown,
+  CaretRight,
+  FileDoc,
+  FilePdf,
+  FileText,
+  Image,
+  PresentationChart,
+  SpinnerGap,
+  Table,
+  UploadSimple,
+  Warning,
+  X,
+  type Icon,
+} from '@phosphor-icons/react'
+import {
   detectKind,
   extractText,
   FILE_ACCEPT,
@@ -14,14 +29,19 @@ import {
   type StoredFile,
 } from '../../services/fileStore'
 
-const KIND_ICON: Record<FileKind, string> = {
-  pptx: '📊',
-  docx: '📄',
-  pdf: '📕',
-  txt: '📝',
-  md: '📝',
-  csv: '📈',
-  image: '🖼',
+const KIND_ICON: Record<FileKind, Icon> = {
+  pptx: PresentationChart,
+  docx: FileDoc,
+  pdf: FilePdf,
+  txt: FileText,
+  md: FileText,
+  csv: Table,
+  image: Image,
+}
+
+function KindIcon({ kind }: { kind: FileKind }) {
+  const I = KIND_ICON[kind]
+  return <I size={22} />
 }
 
 interface Pending {
@@ -46,6 +66,8 @@ export default function FilesView() {
   const [error, setError] = useState<string | null>(null)
   const [dragOver, setDragOver] = useState(false)
   const [preview, setPreview] = useState<Set<string>>(new Set())
+  const [confirmDel, setConfirmDel] = useState<string | null>(null)
+  const [confirmClear, setConfirmClear] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const refresh = useCallback(async () => {
@@ -118,8 +140,8 @@ export default function FilesView() {
   }
 
   async function remove(f: StoredFile) {
-    if (!window.confirm(`Delete “${f.name}” from your study files?`)) return
     await deleteFile(f.id)
+    setConfirmDel(null)
     void refresh()
   }
 
@@ -133,7 +155,7 @@ export default function FilesView() {
         <section className="files-hero glass glass--strong anim-rise">
           <h1 className="files-title">Study files</h1>
           <p className="files-sub">
-            Upload lecture slides, worksheets and scans — then describe each one so the tutor knows what you're
+            Upload lecture slides, worksheets and scans, then describe each one so the tutor knows what you're
             working through. Files stay on this device (IndexedDB) and are sent only to your chosen AI provider.
           </p>
           <div
@@ -146,7 +168,7 @@ export default function FilesView() {
             tabIndex={0}
             onKeyDown={(e) => { if (e.key === 'Enter') inputRef.current?.click() }}
           >
-            <div className="file-drop__icon">⬆</div>
+            <div className="file-drop__icon"><UploadSimple size={22} /></div>
             <div className="file-drop__text">
               <strong>Drop files here</strong> or click to browse
               <span className="file-drop__kinds">PPTX · DOCX · PDF · TXT · MD · CSV · PNG · JPG</span>
@@ -160,14 +182,21 @@ export default function FilesView() {
               onChange={(e) => { if (e.target.files) void handleFiles(e.target.files); e.target.value = '' }}
             />
           </div>
-          {parsing > 0 && <div className="files-status">⏳ Extracting text… ({parsing} in progress)</div>}
-          {error && <div className="files-status files-status--err">⚠ {error}</div>}
+          {parsing > 0 && <div className="files-status"><SpinnerGap size={14} className="icon-spin" /> Extracting text… ({parsing} in progress)</div>}
+          {error && <div className="files-status files-status--err"><Warning size={14} weight="fill" /> {error}</div>}
           {files.length > 0 && (
             <div className="files-stats">
               {files.length} file{files.length === 1 ? '' : 's'} · {(totalBytes / 1024 / 1024).toFixed(1)} MB · {describedCount} described · {textFiles.length} with extractable text
-              <button className="files-clear" onClick={() => { if (window.confirm('Delete ALL study files?')) void clearFiles(subjectId).then(refresh) }}>
+              <button className="files-clear" onClick={() => setConfirmClear(true)}>
                 Clear all
               </button>
+            </div>
+          )}
+          {confirmClear && (
+            <div className="confirm-row">
+              <span>Delete all {files.length} files? This cannot be undone.</span>
+              <button className="btn btn--danger btn--sm" onClick={() => { setConfirmClear(false); void clearFiles(subjectId).then(refresh) }}>Delete all</button>
+              <button className="btn btn--sm" onClick={() => setConfirmClear(false)}>Keep</button>
             </div>
           )}
         </section>
@@ -176,7 +205,7 @@ export default function FilesView() {
         {pending.map((p) => (
           <section key={p.key} className="file-card glass anim-rise file-card--pending">
             <div className="file-card__head">
-              <span className="file-card__icon">{KIND_ICON[p.kind]}</span>
+              <span className="file-card__icon"><KindIcon kind={p.kind} /></span>
               <div className="file-card__meta">
                 <div className="file-card__name">{p.name}</div>
                 <div className="file-card__tags">
@@ -187,14 +216,14 @@ export default function FilesView() {
                 </div>
               </div>
             </div>
-            {p.warning && <div className="files-status files-status--warn">⚠ {p.warning}</div>}
+            {p.warning && <div className="files-status files-status--warn"><Warning size={14} weight="fill" /> {p.warning}</div>}
             <label className="field">
               <span className="field__label">Describe this file for the AI</span>
               <textarea
                 className="input file-desc"
                 rows={2}
                 autoFocus
-                placeholder="e.g. “Week 4 lecture slides — lift, drag and the drag polar; includes worked examples from the tutorial”"
+                placeholder="e.g. Week 4 lecture slides: lift, drag and the drag polar, with worked examples from the tutorial"
                 value={p.desc}
                 onChange={(e) => setPending((list) => list.map((x) => (x.key === p.key ? { ...x, desc: e.target.value } : x)))}
                 onKeyDown={(e) => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) void savePending(p) }}
@@ -210,12 +239,12 @@ export default function FilesView() {
         {/* Saved files */}
         {loading && <div className="files-status">Loading files…</div>}
         {!loading && files.length === 0 && pending.length === 0 && (
-          <div className="locked-banner">No study files yet — drop your first PowerPoint or worksheet above.</div>
+          <div className="locked-banner">No study files yet. Drop your first PowerPoint or worksheet above.</div>
         )}
         {files.map((f) => (
           <section key={f.id} className={`file-card glass anim-rise${f.included ? '' : ' file-card--off'}`}>
             <div className="file-card__head">
-              <span className="file-card__icon">{KIND_ICON[f.kind]}</span>
+              <span className="file-card__icon"><KindIcon kind={f.kind} /></span>
               <div className="file-card__meta">
                 <div className="file-card__name">{f.name}</div>
                 <div className="file-card__tags">
@@ -230,9 +259,18 @@ export default function FilesView() {
                 <input type="checkbox" checked={f.included} onChange={() => void toggleIncluded(f)} />
                 in chat
               </label>
-              <button className="win__btn win__close" onClick={() => void remove(f)} aria-label={`Delete ${f.name}`}>✕</button>
+              <button className="win__btn win__close" onClick={() => setConfirmDel(f.id)} aria-label={`Delete ${f.name}`}>
+                <X size={13} />
+              </button>
             </div>
-            {f.warning && <div className="files-status files-status--warn">⚠ {f.warning}</div>}
+            {confirmDel === f.id && (
+              <div className="confirm-row">
+                <span>Delete “{f.name}”? This cannot be undone.</span>
+                <button className="btn btn--danger btn--sm" onClick={() => void remove(f)}>Delete</button>
+                <button className="btn btn--sm" onClick={() => setConfirmDel(null)}>Keep</button>
+              </div>
+            )}
+            {f.warning && <div className="files-status files-status--warn"><Warning size={14} weight="fill" /> {f.warning}</div>}
             <textarea
               className="input file-desc"
               rows={2}
@@ -243,7 +281,7 @@ export default function FilesView() {
             {f.text && (
               <>
                 <button className="files-preview-btn" onClick={() => setPreview((s) => { const n = new Set(s); n.has(f.id) ? n.delete(f.id) : n.add(f.id); return n })}>
-                  {preview.has(f.id) ? '▾ Hide extracted text' : '▸ Preview extracted text'}
+                  {preview.has(f.id) ? (<><CaretDown size={12} /> Hide extracted text</>) : (<><CaretRight size={12} /> Preview extracted text</>)}
                 </button>
                 {preview.has(f.id) && <pre className="files-preview">{f.text.slice(0, 2400)}{f.text.length > 2400 ? '\n…' : ''}</pre>}
               </>

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { ArrowLeft, Function as FnIcon, MathOperations, X } from '@phosphor-icons/react'
 import { useApp, type DetailWindow } from '../../state/store'
 import type { Subject } from '../../data/schema'
 import { DetailContent } from './DetailContent'
@@ -74,10 +75,10 @@ function FloatingWindow({ w, focused, subject }: { w: DetailWindow; focused: boo
           title="Back"
           aria-label="Back"
         >
-          ←
+          <ArrowLeft size={14} />
         </button>
         <span className="win__title" onDoubleClick={back}>
-          {w.tab.kind === 'formula' ? 'ƒ Formula' : 'x Variable'}
+          {w.tab.kind === 'formula' ? (<><FnIcon size={12} /> Formula</>) : (<><MathOperations size={12} /> Variable</>)}
         </span>
         <button
           className="win__btn win__close"
@@ -85,7 +86,7 @@ function FloatingWindow({ w, focused, subject }: { w: DetailWindow; focused: boo
           title="Close"
           aria-label="Close window"
         >
-          ✕
+          <X size={13} />
         </button>
       </div>
 
@@ -134,7 +135,7 @@ export function WindowsLayer({ subject }: { subject: Subject }) {
       ))}
       {windows.length > 1 && (
         <button className="close-all-btn glass glass--strong" onClick={closeAllWindows} title="Close all windows (Shift+Esc)">
-          ✕ Close all ({windows.length})
+          <X size={12} /> Close all ({windows.length})
         </button>
       )}
     </>

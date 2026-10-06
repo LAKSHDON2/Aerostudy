@@ -1,4 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
+import {
+  CaretDown,
+  CaretUp,
+  Check,
+  DownloadSimple,
+  Eye,
+  EyeSlash,
+  UploadSimple,
+  X,
+} from '@phosphor-icons/react'
 import { useApp } from '../../state/store'
 import { chat, friendlyError, listModels, PROVIDERS, type ProviderId } from '../../services/ai'
 import {
@@ -10,7 +20,7 @@ import {
   useAiSettings,
 } from '../../services/aiSettings'
 import { configuredProviders, usageSummary, type UsageRow } from '../../services/aiRun'
-import { buildBackup, downloadBackup, parseBackup, restoreBackup } from '../../services/backup'
+import { buildBackup, downloadBackup, parseBackup, restoreBackup, type BackupPayload } from '../../services/backup'
 
 const PROVIDER_IDS = Object.keys(PROVIDERS) as ProviderId[]
 
@@ -28,6 +38,7 @@ export default function SettingsModal() {
   const [testing, setTesting] = useState(false)
   const [testOut, setTestOut] = useState<{ ok: boolean; msg: string } | null>(null)
   const [restoreMsg, setRestoreMsg] = useState<string | null>(null)
+  const [pendingRestore, setPendingRestore] = useState<{ date: string; payload: BackupPayload } | null>(null)
   const [showUsage, setShowUsage] = useState(false)
 
   const chain = useMemo(() => configuredProviders(settings), [settings])
@@ -41,12 +52,20 @@ export default function SettingsModal() {
     setRestoreMsg(null)
     try {
       const payload = parseBackup(await file.text())
-      if (!window.confirm(`Restore backup from ${payload.exportedAt.slice(0, 10)}? This replaces ALL local data — progress, files, chats and API keys.`)) return
-      const r = await restoreBackup(payload, 'aero2687')
-      window.location.reload() // every store re-reads the restored data
-      void r
+      setPendingRestore({ date: payload.exportedAt.slice(0, 10), payload })
     } catch (e) {
       setRestoreMsg(e instanceof Error ? e.message : String(e))
+    }
+  }
+
+  async function confirmRestore() {
+    if (!pendingRestore) return
+    try {
+      await restoreBackup(pendingRestore.payload, 'aero2687')
+      window.location.reload() // every store re-reads the restored data
+    } catch (e) {
+      setRestoreMsg(e instanceof Error ? e.message : String(e))
+      setPendingRestore(null)
     }
   }
 
@@ -87,7 +106,7 @@ export default function SettingsModal() {
         baseUrl: cfg.baseUrl,
         maxTokens: 300,
       })
-      setTestOut({ ok: true, msg: `Connected — ${cfg.model} is ready.` })
+      setTestOut({ ok: true, msg: `Connected. ${cfg.model} is ready.` })
     } catch (e) {
       setTestOut({ ok: false, msg: friendlyError(e) })
     } finally {
@@ -106,7 +125,7 @@ export default function SettingsModal() {
       >
         <div className="settings-head">
           <h2 className="settings-title">AI tutor settings</h2>
-          <button className="win__btn" onClick={close} aria-label="Close settings">✕</button>
+          <button className="win__btn" onClick={close} aria-label="Close settings"><X size={14} /></button>
         </div>
 
         <label className="field">
@@ -149,7 +168,7 @@ export default function SettingsModal() {
         )}
 
         <label className="field">
-          <span className="field__label">API key {id === 'custom' && '(optional — some local gateways need none)'}</span>
+          <span className="field__label">API key {id === 'custom' && '(optional; some local gateways need none)'}</span>
           <div className="field__row">
             <input
               className="input"
@@ -161,7 +180,7 @@ export default function SettingsModal() {
               autoComplete="off"
             />
             <button className="btn btn--icon" onClick={() => setShowKey((v) => !v)} title={showKey ? 'Hide key' : 'Show key'}>
-              {showKey ? '🙈' : '👁'}
+              {showKey ? <EyeSlash size={16} /> : <Eye size={16} />}
             </button>
           </div>
         </label>
@@ -197,7 +216,11 @@ export default function SettingsModal() {
           </button>
           <button className="btn" onClick={close}>Done</button>
         </div>
-        {testOut && <div className={`settings-test ${testOut.ok ? 'settings-test--ok' : 'settings-test--bad'}`}>{testOut.ok ? '✓ ' : '✗ '}{testOut.msg}</div>}
+        {testOut && (
+          <div className={`settings-test ${testOut.ok ? 'settings-test--ok' : 'settings-test--bad'}`}>
+            {testOut.ok ? <Check size={14} weight="bold" /> : <X size={14} weight="bold" />} {testOut.msg}
+          </div>
+        )}
 
         <div className="settings-backup">
           <div className="field__label">Fallback chain</div>
@@ -227,7 +250,7 @@ export default function SettingsModal() {
                       ;[next[i - 1], next[i]] = [next[i], next[i - 1]]
                       setFallbackOrder(next)
                     }}
-                  >↑</button>
+                  ><CaretUp size={12} /></button>
                   <button
                     className="fb-item__btn"
                     title="Move down"
@@ -237,7 +260,7 @@ export default function SettingsModal() {
                       ;[next[i + 1], next[i]] = [next[i], next[i + 1]]
                       setFallbackOrder(next)
                     }}
-                  >↓</button>
+                  ><CaretDown size={12} /></button>
                 </span>
               ))}
             </div>
@@ -245,8 +268,7 @@ export default function SettingsModal() {
         </div>
 
         <div className="settings-backup">
-          <div className="field__label">Usage (stored on this device only)</div>
-          <span className="field__hint">Rough estimate for paid tiers — free tiers cost $0. Real billing lives at the provider.</span>
+          <div className="field__label">Usage (stored on this device only)</div>                  <span className="field__hint">Rough estimate for paid tiers; free tiers cost $0. Real billing lives at the provider.</span>
           <button className="btn" onClick={() => setShowUsage((v) => !v)}>{showUsage ? 'Hide' : 'Show'} last 7 days</button>
           {showUsage && (
             usage.length === 0 ? (
@@ -272,12 +294,12 @@ export default function SettingsModal() {
         <div className="settings-backup">
           <div className="field__label">Backup &amp; restore</div>
           <span className="field__hint">
-            One JSON file with your progress, study files, chats and API keys — keep it safe, or move it to any other browser.
+            One JSON file with your progress, study files, chats and API keys. Keep it safe, or move it to any other browser.
           </span>
           <div className="field__row">
-            <button className="btn" onClick={handleExport}>⬇ Download backup</button>
+            <button className="btn" onClick={handleExport}><DownloadSimple size={15} /> Download backup</button>
             <label className="btn">
-              ⬆ Restore from file
+              <UploadSimple size={15} /> Restore from file
               <input
                 type="file"
                 accept=".json,application/json"
@@ -286,12 +308,19 @@ export default function SettingsModal() {
               />
             </label>
           </div>
-          {restoreMsg && <div className="settings-test settings-test--bad">✗ {restoreMsg}</div>}
+          {pendingRestore && (
+            <div className="confirm-row">
+              <span>Replace ALL local data with the backup from {pendingRestore.date}? Progress, files, chats and API keys are overwritten.</span>
+              <button className="btn btn--danger btn--sm" onClick={() => void confirmRestore()}>Restore</button>
+              <button className="btn btn--sm" onClick={() => setPendingRestore(null)}>Cancel</button>
+            </div>
+          )}
+          {restoreMsg && <div className="settings-test settings-test--bad"><X size={14} weight="bold" /> {restoreMsg}</div>}
         </div>
 
         <p className="settings-note">
           Keys are stored only in this browser (localStorage) and sent directly to {info.label}. Use spend-capped keys.
-          {isConfigured(settings) ? '' : ' Not configured yet.'} New to keys? Open the ❓ Help tab for a 3-minute free setup.
+          {isConfigured(settings) ? '' : ' Not configured yet.'} New to keys? Open the Help tab for a 3-minute free setup.
         </p>
       </div>
     </div>

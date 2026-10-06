@@ -1,3 +1,4 @@
+import { Lock } from '@phosphor-icons/react'
 import { useApp } from '../../state/store'
 import type { Subject } from '../../data/schema'
 import { MasterDot, PriorityChip, SourceChip, Tex, WeekChips } from '../../components/common'
@@ -16,7 +17,7 @@ export function ListView({ subject }: { subject: Subject }) {
         {weekFilter === 'all' && (
           <>
             <section>
-              <div className="section-label" style={{ marginBottom: 10 }}>🎯 Exam radar — practice-exam focus areas</div>
+              <div className="section-label" style={{ marginBottom: 10 }}>Exam radar: practice-exam focus areas</div>
               <div className="radar-grid">
                 {subject.examRadar.map((r) => (
                   <div
@@ -68,7 +69,7 @@ export function ListView({ subject }: { subject: Subject }) {
               </header>
               {week.locked ? (
                 <div className="locked-banner">
-                  🔒 {week.examFocus[0]}
+                  <Lock size={14} /> {week.examFocus[0]}
                 </div>
               ) : (
                 <table className="week-block__table">

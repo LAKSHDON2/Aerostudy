@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { ArrowRight } from '@phosphor-icons/react'
 import { useApp } from '../../state/store'
 import type { Formula, Subject } from '../../data/schema'
 import { Tex } from '../../components/common'
@@ -47,8 +48,8 @@ export function HomeView({ subject }: { subject: Subject }) {
           <div className="hero__eyebrow">{subject.institution} · {subject.examMeta}</div>
           <h1 className="hero__title">{subject.title}</h1>
           <p className="hero__sub">
-            45 formulas · {subject.variables.length} variables · 11 weeks · quiz bank of {subject.quizBank.length} —
-            everything examinable, one interactive web.
+            45 formulas · {subject.variables.length} variables · 11 weeks · quiz bank of {subject.quizBank.length}.
+            Everything examinable, one interactive web.
           </p>
           <div className="hero__cta">
             <button className="btn btn--hero" onClick={() => setView('graph')}>Explore the web</button>
@@ -61,7 +62,7 @@ export function HomeView({ subject }: { subject: Subject }) {
         <div className="stat-strip anim-rise">
           <Stat num={`${pct}%`} label="Course mastered" tone={pct >= 80 ? 'success' : 'accent'} />
           <Stat num={mastered.size} label={`of ${totalItems} items`} />
-          <Stat num={attempts.length} label="Quiz attempts" />
+          <Stat num={attempts.length} label={attempts.length === 1 ? 'Quiz attempt' : 'Quiz attempts'} />
           <Stat num={`${Math.round(best)}%`} label="Best score" tone={best >= 70 ? 'success' : undefined} />
         </div>
 
@@ -73,7 +74,7 @@ export function HomeView({ subject }: { subject: Subject }) {
               <div className="home-card__title">{nextUp.name}</div>
               <div className="home-card__formula"><Tex tex={nextUp.latex} display /></div>
               <div className="home-card__hint">
-                Week {nextUp.weekTags.join(' & ')} · {nextUp.examPriority === 'core' ? '★ core' : 'high yield'} — click to open its window
+                Week {nextUp.weekTags.join(' & ')} · {nextUp.examPriority === 'core' ? 'core' : 'high yield'} · click to open its window
               </div>
             </section>
           )}
@@ -88,7 +89,7 @@ export function HomeView({ subject }: { subject: Subject }) {
                 onClick={() => r.relatedIds[0] && openWindow({ kind: 'formula', id: r.relatedIds[0] })}
               >
                 <span>{r.title}</span>
-                <span className="home-radar-row__go">→</span>
+                <span className="home-radar-row__go"><ArrowRight size={13} /></span>
               </button>
             ))}
           </section>
@@ -115,7 +116,7 @@ export function HomeView({ subject }: { subject: Subject }) {
           <section className="home-card glass anim-rise" onClick={() => { setView('list'); useApp.getState().setWeekFilter(latestWeek.number) }}>
             <div className="section-label">Latest material</div>
             <div className="home-card__title">Week {latestWeek.number}</div>
-            <div className="home-card__hint">{latestWeek.title} — {latestWeek.examFocus[0]}</div>
+            <div className="home-card__hint">{latestWeek.title} · {latestWeek.examFocus[0]}</div>
           </section>
         </div>
       </div>
