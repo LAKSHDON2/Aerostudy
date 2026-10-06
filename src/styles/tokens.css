@@ -1,6 +1,7 @@
 /* ─── Aurora-glass design tokens ──────────────────────────────────────────
    Dark is the default theme. [data-theme='light'] overrides below.
-   Palette: deep space blues + electric cyan→violet accents. */
+   Palette: deep space blues + a single cyan accent family (one-accent lock —
+   see design/DESIGN.md). No violet/fuchsia: that was the AI-gradient tell. */
 
 :root,
 [data-theme='dark'] {
@@ -11,9 +12,9 @@
   --bg-1: #070c18;
   --bg-2: #0c1226;
 
-  /* Aurora blobs (drift slowly behind the glass) */
+  /* Aurora blobs (drift slowly behind the glass) — one hue family */
   --aurora-1: rgba(56, 189, 248, 0.16);   /* cyan   */
-  --aurora-2: rgba(139, 92, 246, 0.14);   /* violet */
+  --aurora-2: rgba(59, 130, 246, 0.12);   /* deep sky */
   --aurora-3: rgba(45, 212, 191, 0.10);   /* teal   */
 
   /* Glass surfaces */
@@ -32,20 +33,20 @@
   --text-2: rgba(224, 232, 255, 0.74);
   --text-3: rgba(196, 208, 244, 0.46);
 
-  /* Accents */
+  /* Accents — one family: cyan → sky. Same-hue gradient only. */
   --accent: #6ee7ff;
-  --accent-2: #a78bfa;
-  --accent-3: #f0abfc;
+  --accent-2: #38bdf8;
+  --accent-3: #0ea5e9;
   --accent-soft: rgba(110, 231, 255, 0.13);
-  --accent-grad: linear-gradient(120deg, var(--accent), var(--accent-2) 55%, var(--accent-3));
+  --accent-grad: linear-gradient(120deg, var(--accent), var(--accent-2));
   --glow: 0 0 22px rgba(110, 231, 255, 0.28);
   --success: #34d399;
   --warn: #fbbf24;
   --danger: #fb7185;
 
-  /* Priority badges */
+  /* Priority badges — semantic: core = accent, high = attention amber */
   --prio-core: #7dd3fc;
-  --prio-high: #c4b5fd;
+  --prio-high: #fbbf24;
   --prio-medium: #94a3b8;
 
   /* Week chips */
@@ -60,8 +61,9 @@
     linear-gradient(180deg, var(--bg-1) 0%, var(--bg-0) 100%);
   --node-label: rgba(238, 242, 255, 0.92);
 
-  /* Type */
-  --font-display: 'Sora', 'Inter', system-ui, sans-serif;
+  /* Type — Sora for display, Outfit for UI text (see design/DESIGN.md) */
+  --font-display: 'Sora', 'Outfit', system-ui, sans-serif;
+  --font-body: 'Outfit', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
   /* Motion */
   --ease-fluid: cubic-bezier(0.22, 1, 0.36, 1);
@@ -79,7 +81,7 @@
   --bg-2: #ffffff;
 
   --aurora-1: rgba(14, 165, 233, 0.14);
-  --aurora-2: rgba(139, 92, 246, 0.12);
+  --aurora-2: rgba(37, 99, 235, 0.10);
   --aurora-3: rgba(20, 184, 166, 0.10);
 
   --glass-bg: rgba(255, 255, 255, 0.60);
@@ -97,8 +99,8 @@
   --text-3: rgba(40, 55, 90, 0.46);
 
   --accent: #0284c7;
-  --accent-2: #7c3aed;
-  --accent-3: #c026d3;
+  --accent-2: #0ea5e9;
+  --accent-3: #0369a1;
   --accent-soft: rgba(2, 132, 199, 0.10);
   --glow: 0 0 18px rgba(2, 132, 199, 0.18);
   --success: #0d9488;
@@ -106,7 +108,7 @@
   --danger: #dc2626;
 
   --prio-core: #0369a1;
-  --prio-high: #6d28d9;
+  --prio-high: #b45309;
   --prio-medium: #64748b;
 
   --chip-bg: rgba(2, 132, 199, 0.09);

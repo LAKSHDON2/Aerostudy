@@ -55,17 +55,14 @@
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1.12;
-  background: var(--accent-grad);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--text-1);
 }
 .hero__sub { margin: 0; font-size: 14.5px; color: var(--text-2); max-width: 640px; line-height: 1.6; }
 .hero__cta { display: flex; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
 .btn--hero {
-  background: var(--accent-grad);
+  background: var(--accent);
   border: none;
-  color: #04121f;
+  color: #061021;
   font-weight: 700;
 }
 .btn--hero:hover { box-shadow: var(--glow); transform: translateY(-1px); }
@@ -112,7 +109,6 @@
   transition: background var(--dur-fast) var(--ease-fluid);
 }
 .brand--btn:hover { background: var(--glass-bg-soft); }
-.brand__logo { font-size: 16px; margin-right: 2px; }
 
 @media (max-width: 560px) {
   .week-map { grid-template-columns: repeat(4, 1fr); }
@@ -140,14 +136,10 @@
   font-weight: 800;
   font-size: 17px;
   letter-spacing: 0.02em;
-  background: var(--accent-grad);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--accent);
 }
 .brand__sub { font-size: 12px; color: var(--text-3); font-weight: 500; }
-
-.search-wrap { position: relative; flex: 1 1 220px; min-width: 180px; max-width: 460px; }
+.brand__logo { font-size: 16px; margin-right: 2px; color: var(--accent); display: inline-flex; align-items: center; }
 .search-wrap .icon {
   position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
   color: var(--text-3); pointer-events: none; font-size: 15px;
@@ -506,8 +498,9 @@
 .isa-table tr:last-child td { border-bottom: none; }
 
 .locked-banner {
-  padding: 22px; border-radius: 18px; text-align: center; border: 1px dashed var(--glass-border-strong);
+  padding: 22px; border-radius: 18px; text-align: center;  border: 1px dashed var(--glass-border-strong);
   color: var(--text-2); font-size: 13.5px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
 }
 
 /* ─── Quiz ─────────────────────────────────────────────────────────────── */
@@ -538,7 +531,7 @@
 .quiz-progress__fill { height: 100%; background: var(--accent-grad); border-radius: 999px; transition: width var(--dur-med) var(--ease-fluid); }
 
 .score-hero { padding: 28px; border-radius: 20px; text-align: center; display: flex; flex-direction: column; gap: 10px; align-items: center; }
-.score-hero__num { font-size: 44px; font-weight: 800; font-family: var(--font-display); background: var(--accent-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.score-hero__num { font-size: 44px; font-weight: 800; font-family: var(--font-display); color: var(--accent); font-variant-numeric: tabular-nums; }
 
 .attempt-row { display: flex; align-items: center; justify-content: space-between; padding: 11px 16px; border-radius: 14px; border: 1px solid var(--glass-border); background: var(--glass-bg-soft); font-size: 13px; }
 
@@ -558,6 +551,12 @@
 .stat-card { padding: 16px; border-radius: 16px; text-align: center; }
 .stat-card__num { font-size: 24px; font-weight: 800; font-family: var(--font-display); color: var(--accent); }
 .stat-card__label { font-size: 11.5px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.07em; margin-top: 3px; }
+
+/* Double-bezel: major surfaces sit in a machined tray (soft-skill §4.A) */
+.hero, .home-card {
+  outline: 1px solid color-mix(in srgb, var(--glass-border) 55%, transparent);
+  outline-offset: 5px;
+}
 
 /* ─── Responsive ───────────────────────────────────────────────────────── */
 
@@ -728,7 +727,7 @@
 .files-hero { padding: 24px 26px; display: flex; flex-direction: column; gap: 14px; }
 .files-title {
   margin: 0; font-family: var(--font-display); font-weight: 800; font-size: 26px; letter-spacing: -0.02em;
-  background: var(--accent-grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+  color: var(--text-1);
 }
 .files-sub { margin: 0; font-size: 13.5px; color: var(--text-2); line-height: 1.6; max-width: 620px; }
 
@@ -746,7 +745,25 @@
 .file-drop__text { display: flex; flex-direction: column; gap: 4px; font-size: 13.5px; }
 .file-drop__kinds { font-size: 11px; color: var(--text-3); letter-spacing: 0.06em; }
 
-.files-status { font-size: 12.5px; color: var(--text-2); padding: 8px 12px; border-radius: 12px; background: var(--glass-bg-soft); }
+.files-status { font-size: 12.5px; color: var(--text-2); padding: 8px 12px; border-radius: 12px; background: var(--glass-bg-soft); display: flex; align-items: center; gap: 6px; }
+.files-status svg { flex-shrink: 0; }
+
+/* Inline destructive confirm (replaces window.confirm) */
+.confirm-row {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  font-size: 13px; color: var(--text-2);
+  padding: 10px 14px; border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--danger) 32%, var(--glass-border));
+  background: color-mix(in srgb, var(--danger) 7%, transparent);
+}
+.confirm-row .btn--sm { margin-left: auto; }
+.confirm-row .btn--sm + .btn--sm { margin-left: 0; }
+
+/* Inline Phosphor icons in text runs */
+.chat-empty__title svg, .mode-card__title svg, .settings-title svg, .win__title svg,
+.help-card h2 svg, .locked-banner svg, .home-radar-row__go svg { vertical-align: -0.14em; margin-right: 5px; }
+.locked-banner svg { margin-right: 2px; }
+.home-radar-row__go svg { margin-right: 0; }
 .files-status--err { color: var(--danger); border: 1px solid color-mix(in srgb, var(--danger) 35%, transparent); }
 .files-status--warn { color: var(--warn); border: 1px solid color-mix(in srgb, var(--warn) 35%, transparent); }
 
@@ -761,7 +778,8 @@
 .file-card { padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; }
 .file-card--off { opacity: 0.62; }
 .file-card__head { display: flex; align-items: center; gap: 12px; }
-.file-card__icon { font-size: 22px; flex-shrink: 0; }
+.file-card__icon { font-size: 22px; flex-shrink: 0; color: var(--text-2); }
+.file-card__icon svg { display: block; }
 .file-card__meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; }
 .file-card__name { font-weight: 700; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .file-card__tags { display: flex; gap: 6px; flex-wrap: wrap; }
