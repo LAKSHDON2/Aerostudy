@@ -8,7 +8,7 @@ history and in the pre-pass screenshots.
 
 | # | Severity | Finding | Fix |
 | - | -------- | ------- | --- |
-| 1 | High | AI-slop gradient: hero title, `.btn--hero`, brand code, files title, quiz score number used cyan→violet→fuchsia `--accent-grad` with gradient text | One-accent cyan family in `tokens.css`; all gradient text → solid `--text-1`/`--accent`; `.btn--hero` solid accent with dark ink; gradient kept only as same-hue 2-stop fill (quiz progress bar) |
+| 1 | High | AI-slop gradient: hero title, `.btn--hero`, brand code, files title, quiz score number used cyan→violet→fuchsia `--accent-grad` with gradient text | One-accent family in `tokens.css`; all gradient text → solid `--text-1`/`--accent`; `.btn--hero` solid accent with `--accent-ink` text; gradient kept only as same-hue 2-stop fill (quiz progress bar) |
 | 2 | High | Three accent colors (violet `#a78bfa`, fuchsia `#f0abfc`) diluted the cyan identity | `--accent-2/3` moved into the cyan family (38bdf8 / 0ea5e9) |
 | 3 | High | Emoji pictographs everywhere (✈ ⌕ ⚙ ❓ 🧪 🎯 ☰ ☀ ☾ ➤ ■ ＋ ✕ ← ⬆ ⬇ 🖨 ↺ 👁 🙈 ⏳ 🔒 ⚡ 📝 🔗 ⚠ ✓ ✗ etc.) in 10+ components | Replaced with Phosphor icons, one family, default weight (App, ChatView, TutorOrb, WindowsLayer, DetailContent, FilesView, HelpView, WorksheetModal, SettingsModal, QuizView, ListView, HomeView, common) |
 | 4 | High | `window.confirm` for destructive actions (restore backup, delete file, clear all files, reset progress) — jarring, unstyled, blocks the thread | Inline `.confirm-row` strips with explicit danger buttons in SettingsModal, FilesView (per-file + clear all), ProgressView |
@@ -32,6 +32,17 @@ history and in the pre-pass screenshots.
 - Motion system and spring easings (already compliant); `prefers-reduced-motion` block.
 - Functionality: no behaviour changed; the four `window.confirm` flows were re-hosted
   in-component with identical outcomes (restore → parse → confirm → restore + reload).
+
+## Addendum: dark palette rework (user follow-up)
+
+The electric cyan glow on blue-black亥 still read as "AI dashboard", so three
+alternative dark palettes were mocked on real components in
+`design/palette-preview.html` (Current / A / B / C) and the user chose
+**A — Cockpit graphite + amber**: neutral warm charcoal surfaces, warm off-white
+text, one aviation-instrument amber accent, no colored glow, aurora reduced to
+faint warm pockets. Wired via `tokens.css` dark tokens + `--accent-ink` token;
+`index.html`/`vite.config.ts` theme colors, favicon orbit and the PWA
+description updated to match. Light theme kept its sky-blue family (tested).
 
 ## Verification
 

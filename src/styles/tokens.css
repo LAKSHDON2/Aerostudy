@@ -1,65 +1,71 @@
 /* ─── Aurora-glass design tokens ──────────────────────────────────────────
    Dark is the default theme. [data-theme='light'] overrides below.
-   Palette: deep space blues + a single cyan accent family (one-accent lock —
-   see design/DESIGN.md). No violet/fuchsia: that was the AI-gradient tell. */
+   Dark palette: COCKPIT GRAPHITE — neutral charcoal surfaces (zero blue),
+   warm off-white text, one aviation-instrument amber accent (chosen by the
+   user from design/palette-preview.html; see design/DESIGN.md). No colored
+   glow, no aurora drift, no blue-black. Light theme keeps the sky-blue
+   family for contrast against daylight. */
 
 :root,
 [data-theme='dark'] {
   color-scheme: dark;
 
-  /* Backdrop gradient stops */
-  --bg-0: #04060d;
-  --bg-1: #070c18;
-  --bg-2: #0c1226;
+  /* Backdrop gradient stops — warm neutral charcoal, no blue */
+  --bg-0: #0b0b0d;
+  --bg-1: #131316;
+  --bg-2: #1a1a1e;
 
-  /* Aurora blobs (drift slowly behind the glass) — one hue family */
-  --aurora-1: rgba(56, 189, 248, 0.16);   /* cyan   */
-  --aurora-2: rgba(59, 130, 246, 0.12);   /* deep sky */
-  --aurora-3: rgba(45, 212, 191, 0.10);   /* teal   */
+  /* Ambient blobs — barely-there warm/neutral light pockets (no hue drift) */
+  --aurora-1: rgba(255, 176, 96, 0.045);
+  --aurora-2: rgba(255, 255, 255, 0.028);
+  --aurora-3: rgba(255, 176, 96, 0.035);
 
-  /* Glass surfaces */
-  --glass-bg: rgba(13, 20, 40, 0.58);
-  --glass-bg-strong: rgba(11, 17, 36, 0.84);
-  --glass-bg-soft: rgba(18, 27, 52, 0.36);
-  --glass-border: rgba(126, 168, 255, 0.16);
-  --glass-border-strong: rgba(126, 168, 255, 0.30);
-  --glass-highlight: rgba(255, 255, 255, 0.13);
-  --glass-shadow: 0 10px 36px rgba(1, 4, 14, 0.6), 0 2px 8px rgba(1, 4, 14, 0.4);
-  --glass-inner: inset 0 1px 0 rgba(255, 255, 255, 0.10);
-  --glass-inner-strong: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  /* Glass surfaces — warm neutral translucency */
+  --glass-bg: rgba(24, 24, 28, 0.62);
+  --glass-bg-strong: rgba(19, 19, 23, 0.88);
+  --glass-bg-soft: rgba(30, 30, 35, 0.40);
+  --glass-border: rgba(255, 255, 255, 0.09);
+  --glass-border-strong: rgba(255, 255, 255, 0.17);
+  --glass-highlight: rgba(255, 255, 255, 0.10);
+  --glass-shadow: 0 12px 36px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.40);
+  --glass-inner: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  --glass-inner-strong: inset 0 1px 0 rgba(255, 255, 255, 0.12);
 
-  /* Text */
-  --text-1: #f2f5ff;
-  --text-2: rgba(224, 232, 255, 0.74);
-  --text-3: rgba(196, 208, 244, 0.46);
+  /* Text — warm off-white (instrument-panel laminate) */
+  --text-1: #f2efe8;
+  --text-2: rgba(235, 230, 220, 0.72);
+  --text-3: rgba(220, 214, 200, 0.45);
 
-  /* Accents — one family: cyan → sky. Same-hue gradient only. */
-  --accent: #6ee7ff;
-  --accent-2: #38bdf8;
-  --accent-3: #0ea5e9;
-  --accent-soft: rgba(110, 231, 255, 0.13);
+  /* Accent — one family: aviation-instrument amber.
+     Same-hue ramp only; ink is the warm-dark text color for on-accent fills. */
+  --accent: #ffa94d;
+  --accent-2: #ffbf7a;
+  --accent-3: #e8913a;
+  --accent-ink: #1f1305;
+  --accent-soft: rgba(255, 169, 77, 0.12);
   --accent-grad: linear-gradient(120deg, var(--accent), var(--accent-2));
-  --glow: 0 0 22px rgba(110, 231, 255, 0.28);
-  --success: #34d399;
+  --glow: 0 0 14px rgba(255, 169, 77, 0.14);
+  --success: #5ad196;
   --warn: #fbbf24;
-  --danger: #fb7185;
+  --danger: #f4737e;
 
-  /* Priority badges — semantic: core = accent, high = attention amber */
-  --prio-core: #7dd3fc;
+  /* Priority badges — semantic: core = amber family, high = attention amber,
+     medium = warm slate. (Focused studies sit in the same tight ramp.) */
+  --prio-core: #ffd28a;
   --prio-high: #fbbf24;
-  --prio-medium: #94a3b8;
+  --prio-medium: #9c978c;
 
-  /* Week chips */
-  --chip-bg: rgba(110, 231, 255, 0.11);
-  --chip-text: #9fdcff;
+  /* Week chips — neutral fill, warm text (color belongs to priorities) */
+  --chip-bg: rgba(255, 255, 255, 0.06);
+  --chip-text: #cfc9bd;
 
   /* Canvas */
   --canvas-bg:
-    radial-gradient(1100px 700px at 12% -8%, var(--aurora-1) 0%, transparent 60%),
-    radial-gradient(1000px 640px at 88% 12%, var(--aurora-2) 0%, transparent 55%),
+    radial-gradient(1000px 600px at 18% -12%, var(--aurora-1) 0%, transparent 55%),
+    radial-gradient(900px 560px at 82% 115%, var(--aurora-2) 0%, transparent 60%),
     radial-gradient(900px 700px at 55% 115%, var(--aurora-3) 0%, transparent 60%),
     linear-gradient(180deg, var(--bg-1) 0%, var(--bg-0) 100%);
-  --node-label: rgba(238, 242, 255, 0.92);
+  --node-label: rgba(242, 239, 232, 0.92);
 
   /* Type — Sora for display, Outfit for UI text (see design/DESIGN.md) */
   --font-display: 'Sora', 'Outfit', system-ui, sans-serif;
@@ -101,6 +107,7 @@
   --accent: #0284c7;
   --accent-2: #0ea5e9;
   --accent-3: #0369a1;
+  --accent-ink: #ffffff;
   --accent-soft: rgba(2, 132, 199, 0.10);
   --glow: 0 0 18px rgba(2, 132, 199, 0.18);
   --success: #0d9488;

@@ -17,10 +17,7 @@ Source rules: `design/skills/design-taste-frontend/SKILL.md`,
 
 ## Locked decisions
 
-- **One accent.** Cyan family only (`--accent #22d3ee → --accent-2 #38bdf8 → --accent-3 #0ea5e9`).
-  Same-hue 2-stop ramps are allowed (`--accent-grad`, used on fills only). No AI purple
-  gradients, no second hue in the accent system. Semantic colors stay semantic
-  (success green, warn amber, danger red; `--prio-high` is amber, not violet).
+- **One accent per theme.** Dark = aviation-instrument amber (`#ffa94d`, warm-neutral charcoal surfaces, chosen by the user from `design/palette-preview.html`). Light = sky blue (`#0284c7`). Same-hue ramps only (`--accent-grad` is 2-stop same-hue). No AI purple/blue gradients, no second hue in the accent system, no colored glow. Semantic colors stay semantic (success green, warn amber, danger red; `--prio-high` is amber, not violet).
 - **Fonts.** Sora for display, Outfit for UI text, JetBrains Mono for code. No Inter default.
 - **Icons.** Phosphor (`@phosphor-icons/react`), one family everywhere, default weight,
   `fill`/`bold` only where emphasis is intended. No emoji in the UI.
@@ -31,6 +28,10 @@ Source rules: `design/skills/design-taste-frontend/SKILL.md`,
   Double-bezel detail on hero surfaces: 1 px outline offset 5 px.
 - **Depth.** Tinted shadows + blur; grain overlay (`body::after`, opacity 0.028,
   pointer-events none); backdrop-blur reserved for fixed/overlay layers.
+  Dark theme uses **no colored glow** (`--glow` is a faint amber hint at 0.14 alpha).
+- **Dark backdrop.** Neutral warm charcoal (`#0b0b0d → #1a1a1e`) — zero blue tint.
+  Aurora blobs reduced to barely-visible warm/neutral pockets (0.03–0.05 alpha).
+  On-accent text uses `--accent-ink` (warm dark), never hardcoded.
 - **Motion.** `--ease-fluid` / `--ease-spring`, `prefers-reduced-motion` honoured
   globally; spinners via `.icon-spin`; no transform on text layout properties.
 - **Copy.** Sentence case body, small-caps only for tiny section labels.
