@@ -5,7 +5,7 @@ import { track } from '../services/analytics'
 import type { QuizSession } from '../services/quiz'
 import { parseHash, formatHash } from '../services/deepLink'
 
-export type ViewName = 'home' | 'graph' | 'list' | 'quiz' | 'progress' | 'chat' | 'files'
+export type ViewName = 'home' | 'graph' | 'list' | 'quiz' | 'progress' | 'chat' | 'files' | 'help'
 
 /** What a floating window shows — extended with a navigation stack for Back. */
 export interface WindowTab {
@@ -45,6 +45,8 @@ interface AppState {
   phase: 'setup' | 'running' | 'done'
   /** AI settings modal (gear icon / “add your key” banners). */
   settingsOpen: boolean
+  /** AI worksheet generator modal. */
+  worksheetOpen: boolean
 
   setTheme(t: ThemeName): void
   toggleTheme(): void
@@ -74,6 +76,8 @@ interface AppState {
   exitQuiz(): void
   openSettings(): void
   closeSettings(): void
+  openWorksheet(): void
+  closeWorksheet(): void
 }
 
 const subjectId = 'aero2687'
@@ -113,6 +117,7 @@ export const useApp = create<AppState>((set, get) => ({
   answers: [],
   phase: 'setup',
   settingsOpen: false,
+  worksheetOpen: false,
 
   setTheme(t) {
     applyTheme(t)
@@ -249,6 +254,12 @@ export const useApp = create<AppState>((set, get) => ({
   },
   closeSettings() {
     set({ settingsOpen: false })
+  },
+  openWorksheet() {
+    set({ worksheetOpen: true })
+  },
+  closeWorksheet() {
+    set({ worksheetOpen: false })
   },
 }))
 

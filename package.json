@@ -1,7 +1,7 @@
 {
   "name": "aero2687-study-web",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.2.0",
   "type": "module",
   "description": "AERO2687 Introduction to Aerospace Engineering — interactive liquid-glass 3D formula & variable web (RMIT)",
   "scripts": {

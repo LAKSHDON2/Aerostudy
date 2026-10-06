@@ -342,6 +342,108 @@
 .kv .k { color: var(--text-3); }
 .kv .v { text-align: right; font-weight: 600; color: var(--text-1); font-variant-numeric: tabular-nums; }
 
+/* ─── Tutor orb + agent panel ─────────────────────────────────────── */
+
+.tutor-orb {
+  position: fixed; right: 20px; bottom: 20px; z-index: 60;
+  width: 54px; height: 54px; border-radius: 50%;
+  border: 1px solid var(--glass-border-strong);
+  background: radial-gradient(circle at 32% 28%, color-mix(in srgb, var(--accent) 88%, white), var(--accent) 58%, color-mix(in srgb, var(--accent) 60%, #061021));
+  color: #071021; font-size: 22px; cursor: pointer;
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--accent) 30%, transparent), 0 2px 8px rgba(0,0,0,.35);
+  display: grid; place-items: center;
+  transition: transform var(--dur-fast) var(--ease-fluid), box-shadow var(--dur-fast) var(--ease-fluid);
+}
+.tutor-orb:hover { transform: translateY(-2px) scale(1.04); }
+.tutor-orb--open { transform: scale(0.96); }
+.tutor-orb--busy { animation: orb-pulse 1.2s ease-in-out infinite; }
+@keyframes orb-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent); }
+  50% { box-shadow: 0 0 0 14px transparent; }
+}
+
+.orb-panel {
+  position: fixed; right: 20px; bottom: 84px; z-index: 60;
+  width: min(380px, calc(100vw - 32px)); height: min(540px, calc(100dvh - 140px));
+  border-radius: 20px; display: flex; flex-direction: column; overflow: hidden;
+}
+.orb-panel__head { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--glass-border); }
+.orb-panel__dot { width: 9px; height: 9px; border-radius: 50%; background: var(--success); box-shadow: 0 0 8px var(--success); }
+.orb-panel__title { font-weight: 700; font-size: 13px; flex: 1; }
+.orb-panel__msgs { flex: 1; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+.orb-empty__t { font-weight: 700; margin-bottom: 4px; }
+.orb-empty p { font-size: 13px; color: var(--text-2); margin: 0 0 8px; }
+.orb-starters { display: flex; flex-wrap: wrap; gap: 6px; }
+.orb-composer { display: flex; gap: 8px; padding: 10px; border-top: 1px solid var(--glass-border); align-items: flex-end; }
+.orb-input { flex: 1; resize: none; min-height: 44px; }
+.orb-send { min-height: 44px; width: 48px; justify-content: center; padding: 0; }
+.orb-send--stop { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 40%, transparent); }
+.chat-bubble__body--sm { font-size: 13px; }
+
+/* ─── Profile card ─────────────────────────────────────────────────── */
+
+.profile-card {
+  margin: 0 16px; padding: 12px 14px; border-radius: 16px;
+  border: 1px solid var(--glass-border); background: var(--glass-bg-soft);
+}
+.profile-topics { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+.profile-topic-btns { display: inline-flex; gap: 2px; }
+.profile-topic--weak { border-color: color-mix(in srgb, var(--warning, #e2b452) 55%, transparent); color: var(--warning, #e2b452); }
+.profile-topic--strong { min-width: 26px; justify-content: center; color: var(--text-3); }
+.profile-topic--strong-on { color: var(--success); border-color: color-mix(in srgb, var(--success) 50%, transparent); }
+.profile-hint { font-size: 12px; color: var(--text-3); margin: 8px 0 0; }
+
+/* ─── Worksheet modal ─────────────────────────────────────────────── */
+
+.ws-modal { width: min(720px, calc(100vw - 32px)); }
+.ws-field--half { flex: 1; }
+.ws-sol-row { margin: 4px 0 8px; }
+.ws-progress { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 34px 10px; }
+.ws-ready-actions { flex-wrap: wrap; align-items: center; }
+.ws-stat { font-size: 12px; color: var(--text-2); margin-right: auto; }
+.ws-preview { border: 1px solid var(--glass-border); border-radius: 14px; padding: 16px; margin-top: 10px; background: var(--glass-bg-soft); max-height: 46vh; overflow-y: auto; }
+.ws-title { margin: 0 0 2px; font-size: 17px; }
+.ws-meta { color: var(--text-3); font-size: 12px; margin-bottom: 10px; }
+.ws-section__head { font-weight: 700; margin: 14px 0 4px; padding-bottom: 3px; border-bottom: 1px solid var(--glass-border); }
+.ws-section__intro { color: var(--text-2); font-size: 13px; font-style: italic; margin: 4px 0; }
+.ws-q { margin: 10px 0; }
+.ws-q__marks { color: var(--text-3); font-size: 12px; }
+.ws-q__sol { margin: 6px 0 0 18px; padding: 8px 12px; border-left: 3px solid var(--glass-border-strong); border-radius: 6px; background: var(--glass-bg-soft); font-size: 13px; }
+
+/* ─── Help view ───────────────────────────────────────────────────── */
+
+.help-wrap { position: absolute; inset: 0; overflow-y: auto; }
+.help-inner { max-width: 860px; margin: 0 auto; padding: 22px 16px 60px; display: flex; flex-direction: column; gap: 16px; }
+.help-title { margin: 0; font-size: 24px; }
+.help-sub { color: var(--text-2); margin: 0; }
+.help-card { border-radius: 18px; padding: 16px 18px; }
+.help-card h2 { margin: 0 0 10px; font-size: 16px; }
+.help-card h3 { margin: 14px 0 6px; font-size: 14px; }
+.help-ol { margin: 6px 0; padding-left: 22px; display: flex; flex-direction: column; gap: 5px; font-size: 14px; }
+.help-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.help-table th, .help-table td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--glass-border); vertical-align: top; }
+.help-table th { color: var(--text-3); font-weight: 600; }
+.help-note { color: var(--text-2); font-size: 13px; margin: 6px 0 0; }
+.help-foot { color: var(--text-3); font-size: 12px; }
+
+/* ─── Fallback + usage in settings ────────────────────────────────── */
+
+.fb-order { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
+.fb-item { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; }
+.fb-item__pos { width: 18px; height: 18px; border-radius: 50%; background: var(--glass-bg-soft); border: 1px solid var(--glass-border); display: grid; place-items: center; font-size: 11px; color: var(--text-2); }
+.fb-item__btn { background: transparent; border: none; color: var(--text-2); cursor: pointer; font-size: 12px; padding: 2px 4px; }
+.fb-item__btn:disabled { opacity: 0.35; cursor: default; }
+.usage-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+.usage-table th, .usage-table td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--glass-border); }
+
+/* ─── Print: only the worksheet preview ───────────────────────────── */
+
+@media print {
+  body * { visibility: hidden; }
+  .ws-preview, .ws-preview * { visibility: visible; }
+  .ws-preview { position: absolute; inset: 0; max-height: none; overflow: visible; border: none; background: white; color: black; }
+}
+
 .detail-btn-row { display: flex; gap: 8px; margin-top: 2px; }
 .detail-btn-row .btn { flex: 1; justify-content: center; padding: 0 10px; }
 .detail-btn-row .mastered-btn { width: auto; }

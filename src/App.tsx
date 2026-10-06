@@ -12,6 +12,9 @@ import { HomeView } from './features/home/HomeView'
 const ChatView = lazy(() => import('./features/chat/ChatView'))
 const FilesView = lazy(() => import('./features/files/FilesView'))
 const SettingsModal = lazy(() => import('./features/ai/SettingsModal'))
+const HelpView = lazy(() => import('./features/help/HelpView'))
+const TutorOrb = lazy(() => import('./features/tutor/TutorOrb'))
+const WorksheetModal = lazy(() => import('./features/ai/WorksheetModal'))
 
 export default function App() {
   const subject = useMemo(() => getSubject('aero2687'), [])
@@ -23,6 +26,8 @@ export default function App() {
   const setSearchQuery = useApp((s) => s.setSearchQuery)
   const searchOpen = useApp((s) => s.searchOpen)
   const settingsOpen = useApp((s) => s.settingsOpen)
+  const worksheetOpen = useApp((s) => s.worksheetOpen)
+  const openWorksheet = useApp((s) => s.openWorksheet)
   const openWindow = useApp((s) => s.openWindow)
   const weekFilter = useApp((s) => s.weekFilter)
   const setWeekFilter = useApp((s) => s.setWeekFilter)
@@ -104,6 +109,8 @@ export default function App() {
           ))}
         </div>
 
+        <button className="btn btn--icon" onClick={openWorksheet} title="AI worksheet generator — quiz with solutions" aria-label="AI worksheet generator">🧪</button>
+        <button className="btn btn--icon" onClick={() => setView('help')} title="Help & API keys" aria-label="Help">❓</button>
         <button className="btn btn--icon" onClick={() => useApp.getState().openSettings()} title="AI settings — API keys & models" aria-label="AI settings">
           ⚙
         </button>
@@ -121,12 +128,21 @@ export default function App() {
         <Suspense fallback={<div className="view-loading">Loading…</div>}>
           {view === 'chat' && <ChatView subject={subject} />}
           {view === 'files' && <FilesView />}
+          {view === 'help' && <HelpView />}
         </Suspense>
         {settingsOpen && (
           <Suspense fallback={null}>
             <SettingsModal />
           </Suspense>
         )}
+        {worksheetOpen && (
+          <Suspense fallback={null}>
+            <WorksheetModal subject={subject} />
+          </Suspense>
+        )}
+        <Suspense fallback={null}>
+          <TutorOrb subject={subject} />
+        </Suspense>
         <WindowsLayer subject={subject} />
       </main>
     </div>

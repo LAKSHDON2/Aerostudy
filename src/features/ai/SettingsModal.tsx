@@ -1,7 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useApp } from '../../state/store'
 import { chat, friendlyError, listModels, PROVIDERS, type ProviderId } from '../../services/ai'
-import { isConfigured, setActiveProvider, updateProvider, useAiSettings } from '../../services/aiSettings'
+import {
+  isConfigured,
+  setActiveProvider,
+  setFallbackEnabled,
+  setFallbackOrder,
+  updateProvider,
+  useAiSettings,
+} from '../../services/aiSettings'
+import { configuredProviders, usageSummary, type UsageRow } from '../../services/aiRun'
 import { buildBackup, downloadBackup, parseBackup, restoreBackup } from '../../services/backup'
 
 const PROVIDER_IDS = Object.keys(PROVIDERS) as ProviderId[]
@@ -20,6 +28,10 @@ export default function SettingsModal() {
   const [testing, setTesting] = useState(false)
   const [testOut, setTestOut] = useState<{ ok: boolean; msg: string } | null>(null)
   const [restoreMsg, setRestoreMsg] = useState<string | null>(null)
+  const [showUsage, setShowUsage] = useState(false)
+
+  const chain = useMemo(() => configuredProviders(settings), [settings])
+  const usage: UsageRow[] = useMemo(() => (showUsage ? usageSummary('aero2687', 7) : []), [showUsage])
 
   function handleExport() {
     void buildBackup('aero2687').then(downloadBackup)
@@ -188,6 +200,76 @@ export default function SettingsModal() {
         {testOut && <div className={`settings-test ${testOut.ok ? 'settings-test--ok' : 'settings-test--bad'}`}>{testOut.ok ? '✓ ' : '✗ '}{testOut.msg}</div>}
 
         <div className="settings-backup">
+          <div className="field__label">Fallback chain</div>
+          <span className="field__hint">
+            When the active provider rate-limits or errors, retry your other configured providers in this order.
+            Currently configured: {chain.length === 0 ? 'none yet' : chain.join(', ')}.
+          </span>
+          <label className="ctx-row">
+            <input
+              type="checkbox"
+              checked={settings.fallbackEnabled}
+              onChange={(e) => setFallbackEnabled(e.target.checked)}
+            />
+            <span><strong>Enable fallback</strong><em>keeps study nights alive when one provider dies</em></span>
+          </label>
+          {settings.fallbackEnabled && (
+            <div className="fb-order">
+              {settings.fallbackOrder.map((pid, i) => (
+                <span key={pid} className="fb-item">
+                  <span className="fb-item__pos">{i + 1}</span> {PROVIDERS[pid].label}
+                  <button
+                    className="fb-item__btn"
+                    title="Move up"
+                    disabled={i === 0}
+                    onClick={() => {
+                      const next = [...settings.fallbackOrder]
+                      ;[next[i - 1], next[i]] = [next[i], next[i - 1]]
+                      setFallbackOrder(next)
+                    }}
+                  >↑</button>
+                  <button
+                    className="fb-item__btn"
+                    title="Move down"
+                    disabled={i === settings.fallbackOrder.length - 1}
+                    onClick={() => {
+                      const next = [...settings.fallbackOrder]
+                      ;[next[i + 1], next[i]] = [next[i], next[i + 1]]
+                      setFallbackOrder(next)
+                    }}
+                  >↓</button>
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="settings-backup">
+          <div className="field__label">Usage (stored on this device only)</div>
+          <span className="field__hint">Rough estimate for paid tiers — free tiers cost $0. Real billing lives at the provider.</span>
+          <button className="btn" onClick={() => setShowUsage((v) => !v)}>{showUsage ? 'Hide' : 'Show'} last 7 days</button>
+          {showUsage && (
+            usage.length === 0 ? (
+              <p className="field__hint">No AI requests recorded yet.</p>
+            ) : (
+              <table className="usage-table">
+                <thead><tr><th>Provider</th><th>Requests</th><th>≈ tokens</th><th>≈ cost</th></tr></thead>
+                <tbody>
+                  {usage.map((u) => (
+                    <tr key={u.provider}>
+                      <td>{PROVIDERS[u.provider].label}</td>
+                      <td>{u.requests}</td>
+                      <td>{Math.round((u.charsIn + u.charsOut) / 4).toLocaleString()}</td>
+                      <td>{u.estCostCents === 0 ? 'free' : `~$${(u.estCostCents / 100).toFixed(2)}`}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )
+          )}
+        </div>
+
+        <div className="settings-backup">
           <div className="field__label">Backup &amp; restore</div>
           <span className="field__hint">
             One JSON file with your progress, study files, chats and API keys — keep it safe, or move it to any other browser.
@@ -209,7 +291,7 @@ export default function SettingsModal() {
 
         <p className="settings-note">
           Keys are stored only in this browser (localStorage) and sent directly to {info.label}. Use spend-capped keys.
-          {isConfigured(settings) ? '' : ' Not configured yet.'}
+          {isConfigured(settings) ? '' : ' Not configured yet.'} New to keys? Open the ❓ Help tab for a 3-minute free setup.
         </p>
       </div>
     </div>

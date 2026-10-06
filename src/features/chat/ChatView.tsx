@@ -3,6 +3,7 @@ import type { Subject } from '../../data/schema'
 import { useApp } from '../../state/store'
 import { chat, friendlyError, type ChatTurn } from '../../services/ai'
 import { getAiSettings, isConfigured, useAiSettings } from '../../services/aiSettings'
+import { daysUntilExam, loadProfile, recordSession, saveProfile, toggleStrongTopic, toggleWeakTopic, type LearnerProfile } from '../../services/profile'
 import {
   buildCourseDigest,
   buildSystemPrompt,
@@ -28,6 +29,69 @@ const STARTERS = [
   'How does a hot day change take-off distance?',
 ]
 
+/** Personalisation card — owns its state so typing never snaps back. */
+function ProfileCard({ subject, initial }: { subject: Subject; initial: LearnerProfile }) {
+  const [p, setP] = useState(initial)
+  const days = daysUntilExam(p)
+  const save = (patch: Partial<LearnerProfile>) => {
+    const next = { ...p, ...patch }
+    saveProfile(subject.id, next)
+    setP(next)
+  }
+  return (
+    <div className="profile-card">
+      <div className="section-label">Personalise your tutor</div>
+      <label className="field">
+        <span className="field__label">Your goal</span>
+        <input
+          className="input"
+          placeholder="e.g. pass comfortably, or aim for HD"
+          value={p.goal}
+          onChange={(e) => save({ goal: e.target.value })}
+        />
+      </label>
+      <label className="field">
+        <span className="field__label">Exam date</span>
+        <input
+          className="input"
+          type="date"
+          value={p.examDate}
+          onChange={(e) => save({ examDate: e.target.value })}
+        />
+        {days !== null && <span className="field__hint">{days === 0 ? 'Exam is today — good luck!' : `Exam in ${days} day${days === 1 ? '' : 's'}.`}</span>}
+      </label>
+      <div className="field">
+        <span className="field__label">Tick what you find hard / feel solid in</span>
+        <div className="profile-topics">
+          {subject.topics.map((t) => {
+            const weak = p.weakTopics.includes(t.id)
+            const strong = p.strongTopics.includes(t.id)
+            return (
+              <span key={t.id} className="profile-topic-btns">
+                <button
+                  className={`chip profile-topic${weak ? ' profile-topic--weak' : ''}`}
+                  title={weak ? 'Click to unset' : 'I find this hard'}
+                  onClick={() => setP(toggleWeakTopic(subject.id, t.id))}
+                >
+                  {weak ? '⚠ ' : ''}{t.name}
+                </button>
+                <button
+                  className={`chip profile-topic profile-topic--strong${strong ? ' profile-topic--strong-on' : ''}`}
+                  title={strong ? 'Click to unset' : 'I feel solid here'}
+                  onClick={() => setP(toggleStrongTopic(subject.id, t.id))}
+                >
+                  ✓
+                </button>
+              </span>
+            )
+          })}
+        </div>
+      </div>
+      <p className="profile-hint">The tutor uses this in every reply — easier scaffolding on ⚠ topics, stretch questions on ✓ ones.</p>
+    </div>
+  )
+}
+
 const uuid = () =>
   typeof crypto.randomUUID === 'function' ? crypto.randomUUID() : `m${Date.now()}${Math.random().toString(16).slice(2)}`
 
@@ -43,6 +107,8 @@ export default function ChatView({ subject }: { subject: Subject }) {
   const [busy, setBusy] = useState(false)
   const [includeCourse, setIncludeCourse] = useState(true)
   const [ctxOpen, setCtxOpen] = useState(() => typeof window === 'undefined' || window.innerWidth > 900)
+  const [profile, setProfile] = useState(() => loadProfile(subjectId))
+  const [profileOpen, setProfileOpen] = useState(false)
   const [loadErr, setLoadErr] = useState<string | null>(null)
   const abortRef = useRef<AbortController | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -110,7 +176,7 @@ export default function ChatView({ subject }: { subject: Subject }) {
     if (turns.length > 0 && turns[turns.length - 1].role === 'user' && imgs.length) {
       turns[turns.length - 1].images = imgs
     }
-    const system = buildSystemPrompt(subject, includedFiles, includeCourse)
+    const system = buildSystemPrompt(subject, includedFiles, includeCourse, profile)
 
     setBusy(true)
     const ac = new AbortController()
@@ -124,6 +190,8 @@ export default function ChatView({ subject }: { subject: Subject }) {
         baseUrl: cfg.baseUrl,
         signal: ac.signal,
       })
+      recordSession(subjectId)
+      setProfile(loadProfile(subjectId))
       const aiMsg: UiMessage = { id: uuid(), role: 'assistant', content: reply, model: cfg.model, at: Date.now() }
       const withReply = [...next, aiMsg]
       setMessages(withReply)
@@ -199,6 +267,7 @@ export default function ChatView({ subject }: { subject: Subject }) {
       <div className="chat-main">
         <div className="chat-topbar">
           <button className="btn btn--icon" onClick={() => setCtxOpen((v) => !v)} title="Toggle study context">☰</button>
+          <button className="btn btn--icon" onClick={() => setProfileOpen((v) => !v)} title="Personalise your tutor" aria-label="Personalise">🎯</button>
           <div className="chat-title">{activeTitle}</div>
           <select className="input chat-hist" value={activeId ?? ''} onChange={(e) => switchChat(e.target.value)} aria-label="Chat history">
             <option value="">History…</option>
@@ -210,6 +279,8 @@ export default function ChatView({ subject }: { subject: Subject }) {
         </div>
 
         {loadErr && <div className="files-status files-status--err">⚠ {loadErr}</div>}
+
+        {profileOpen && <ProfileCard subject={subject} initial={profile} />}
 
         <div className="chat-msgs scroll-glass" ref={scrollRef}>
           {messages.length === 0 && !busy && (

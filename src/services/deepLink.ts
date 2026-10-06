@@ -18,7 +18,7 @@ export interface DeepLinkState {
   window: { kind: DeepKind; id: string } | null
 }
 
-const VIEWS: readonly ViewName[] = ['home', 'graph', 'list', 'quiz', 'progress', 'chat', 'files']
+const VIEWS: readonly ViewName[] = ['home', 'graph', 'list', 'quiz', 'progress', 'chat', 'files', 'help']
 /** Safe id charset — a malformed/garbage hash is ignored, never applied. */
 const ID_RE = /^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$/
 
