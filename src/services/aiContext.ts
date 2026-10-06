@@ -5,6 +5,7 @@
 
 import type { Subject } from '../data/schema'
 import type { StoredFile } from './fileStore'
+import { buildLearnerBlock, type LearnerProfile } from './profile'
 
 /** Hard cap for the course digest (progressively trimmed to fit). */
 export const DIGEST_MAX = 36000
@@ -101,8 +102,16 @@ export function estimateContextChars(digest: string, files: StoredFile[]): numbe
   return digest.length + files.reduce((n, f) => n + (f.text?.length ?? 0), 0)
 }
 
-/** The tutor persona + reference material, as one system prompt. */
-export function buildSystemPrompt(subject: Subject, files: StoredFile[], includeCourse: boolean): string {
+/**
+ * The tutor persona + reference material + learner profile, as one system
+ * prompt. profile is optional so existing callers keep compiling.
+ */
+export function buildSystemPrompt(
+  subject: Subject,
+  files: StoredFile[],
+  includeCourse: boolean,
+  profile?: LearnerProfile,
+): string {
   const parts: string[] = [
     `You are the ${subject.code} Study Tutor — a patient, exam-focused aerospace engineering tutor for "${subject.title}" at ${subject.institution}.`,
     `Assessment: ${subject.examMeta}. The student must understand and recall formulas, variables, units and problem-solving methods WITHOUT notes.`,
@@ -117,6 +126,7 @@ export function buildSystemPrompt(subject: Subject, files: StoredFile[], include
     '- Never invent course content: week numbers and formulas must come from the reference.',
   ]
   if (includeCourse) parts.push('', '=== COURSE REFERENCE ===', buildCourseDigest(subject), '=== END COURSE REFERENCE ===')
+  if (profile) parts.push('', buildLearnerBlock(profile, subject))
   const fileCtx = buildFileContext(files)
   if (fileCtx) parts.push('', '=== UPLOADED MATERIALS ===', fileCtx, '=== END UPLOADED MATERIALS ===')
   return parts.join('\n')

@@ -25,6 +25,10 @@ export interface ProviderConfig {
 export interface AiSettings {
   activeProvider: ProviderId
   providers: Record<ProviderId, ProviderConfig>
+  /** When a provider rate-limits/fails, try the next configured one. */
+  fallbackEnabled: boolean
+  /** Preferred fallback order (provider ids; missing ones are skipped). */
+  fallbackOrder: ProviderId[]
 }
 
 const subjectId = 'aero2687'
@@ -49,11 +53,20 @@ export const DEFAULT_SETTINGS: AiSettings = {
     openrouter: emptyProvider('openrouter'),
     custom: emptyProvider('custom'),
   },
+  fallbackEnabled: true,
+  fallbackOrder: ['gemini', 'openrouter', 'openai', 'anthropic', 'custom'],
 }
 
 function load(): AiSettings {
   const saved = storage.load<Partial<AiSettings>>(subjectId, FIELD, {})
+  const order = Array.isArray(saved.fallbackOrder)
+    ? saved.fallbackOrder.filter((p): p is ProviderId => (DEFAULT_SETTINGS.fallbackOrder as string[]).includes(p))
+    : DEFAULT_SETTINGS.fallbackOrder
+  // Any provider missing from a saved order keeps a sensible trailing position.
+  for (const p of DEFAULT_SETTINGS.fallbackOrder) if (!order.includes(p)) order.push(p)
   return {
+    fallbackEnabled: saved.fallbackEnabled !== false,
+    fallbackOrder: order,
     activeProvider: saved.activeProvider ?? DEFAULT_SETTINGS.activeProvider,
     providers: {
       openai: { ...DEFAULT_SETTINGS.providers.openai, ...saved.providers?.openai },
@@ -85,6 +98,14 @@ export function updateSettings(patch: (s: AiSettings) => AiSettings): void {
 
 export function setActiveProvider(id: ProviderId): void {
   updateSettings((s) => ({ ...s, activeProvider: id }))
+}
+
+export function setFallbackEnabled(enabled: boolean): void {
+  updateSettings((s) => ({ ...s, fallbackEnabled: enabled }))
+}
+
+export function setFallbackOrder(order: ProviderId[]): void {
+  updateSettings((s) => ({ ...s, fallbackOrder: order }))
 }
 
 export function updateProvider(id: ProviderId, patch: Partial<ProviderConfig>): void {
