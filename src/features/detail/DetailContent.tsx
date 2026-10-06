@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useApp } from '../../state/store'
 import type { Subject } from '../../data/schema'
 import { PriorityChip, RichText, SourceChip, Tex, WeekChips } from '../../components/common'
+import { buildShareUrl } from '../../services/deepLink'
 
 /** Expandable units + typical-values card (kept collapsed by default). */
 function UnitToggle({ si, other, typical }: { si: string; other?: string[]; typical?: { context: string; range: string }[] }) {
@@ -24,6 +25,49 @@ function UnitToggle({ si, other, typical }: { si: string; other?: string[]; typi
         </div>
       )}
     </div>
+  )
+}
+
+/** Copies text even in webviews that deny or hang on the async clipboard API. */
+async function copyText(text: string): Promise<'ok' | 'fail'> {
+  try {
+    const timeout = new Promise<never>((_, rej) => window.setTimeout(() => rej(new Error('clipboard timeout')), 1500))
+    await Promise.race([navigator.clipboard.writeText(text), timeout])
+    return 'ok'
+  } catch {
+    try {
+      const ta = document.createElement('textarea')
+      ta.value = text
+      ta.setAttribute('readonly', '')
+      ta.style.position = 'fixed'
+      ta.style.opacity = '0'
+      document.body.appendChild(ta)
+      ta.focus()
+      ta.select()
+      const ok = document.execCommand('copy')
+      ta.remove()
+      return ok ? 'ok' : 'fail'
+    } catch {
+      return 'fail'
+    }
+  }
+}
+
+/** Copies a URL that reopens this exact item in this exact view. */
+function CopyLinkButton({ kind, id }: { kind: 'formula' | 'variable'; id: string }) {
+  const view = useApp((s) => s.view)
+  const [state, setState] = useState<'idle' | 'copied' | 'failed'>('idle')
+  const onCopy = () => {
+    copyText(buildShareUrl({ view, window: { kind, id } })).then((r) => {
+      setState(r === 'ok' ? 'copied' : 'failed')
+      window.setTimeout(() => setState('idle'), 1800)
+    })
+  }
+  const label = state === 'copied' ? '✓ Link copied' : state === 'failed' ? '⚠ Copy failed' : '🔗 Copy link'
+  return (
+    <button className="btn copy-link-btn" title="Copy a link that opens this exact item" onClick={onCopy}>
+      {label}
+    </button>
   )
 }
 
@@ -143,12 +187,15 @@ export function DetailContent({ subject, windowKey, kind, id }: { subject: Subje
         </>
       )}
 
-      <button
-        className={`btn mastered-btn${isMastered ? ' mastered-btn--on' : ''}`}
-        onClick={() => toggleMastered(id)}
-      >
-        {isMastered ? '✓ Mastered' : 'Mark as mastered'}
-      </button>
+      <div className="detail-btn-row">
+        <CopyLinkButton kind={kind} id={id} />
+        <button
+          className={`btn mastered-btn${isMastered ? ' mastered-btn--on' : ''}`}
+          onClick={() => toggleMastered(id)}
+        >
+          {isMastered ? '✓ Mastered' : 'Mark as mastered'}
+        </button>
+      </div>
     </>
   )
 }

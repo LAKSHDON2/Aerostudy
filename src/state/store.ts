@@ -3,6 +3,7 @@ import type { GraphCamera, QuizAttempt, ThemeName } from '../services/storage'
 import { loadState, storage } from '../services/storage'
 import { track } from '../services/analytics'
 import type { QuizSession } from '../services/quiz'
+import { parseHash, formatHash } from '../services/deepLink'
 
 export type ViewName = 'home' | 'graph' | 'list' | 'quiz' | 'progress' | 'chat' | 'files'
 
@@ -253,3 +254,30 @@ export const useApp = create<AppState>((set, get) => ({
 
 /** Selectors */
 export const selectSearchActive = (s: AppState) => s.searchQuery.trim().length > 0
+
+/** ── Deep links: view + focused window ↔ location.hash ───────────────── */
+
+// Opening a shared URL restores the view + open window at boot.
+const bootLink = parseHash(window.location.hash)
+if (bootLink) {
+  const boot = useApp.getState()
+  if (bootLink.view !== boot.view) boot.setView(bootLink.view)
+  if (bootLink.window) boot.openWindow(bootLink.window)
+}
+
+// Reflect every navigation in the URL (replaceState → no history spam).
+useApp.subscribe(() => {
+  const s = useApp.getState()
+  const next = formatHash({ view: s.view, window: s.focusedTab() })
+  if (window.location.hash !== next) history.replaceState(null, '', next)
+})
+
+// Hash changes from outside (pasted link, back/forward) drive the app.
+window.addEventListener('hashchange', () => {
+  const link = parseHash(window.location.hash)
+  if (!link) return
+  const s = useApp.getState()
+  if (link.view !== s.view) s.setView(link.view)
+  if (link.window) s.openWindow(link.window)
+  else if (s.windows.length > 0) s.closeAllWindows()
+})

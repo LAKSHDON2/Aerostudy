@@ -342,6 +342,10 @@
 .kv .k { color: var(--text-3); }
 .kv .v { text-align: right; font-weight: 600; color: var(--text-1); font-variant-numeric: tabular-nums; }
 
+.detail-btn-row { display: flex; gap: 8px; margin-top: 2px; }
+.detail-btn-row .btn { flex: 1; justify-content: center; padding: 0 10px; }
+.detail-btn-row .mastered-btn { width: auto; }
+.copy-link-btn { color: var(--text-2); }
 .mastered-btn { width: 100%; justify-content: center; margin-top: 2px; }
 .mastered-btn--on {
   background: color-mix(in srgb, var(--success) 15%, transparent);
