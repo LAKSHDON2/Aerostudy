@@ -1,4 +1,4 @@
-import { Lock } from '@phosphor-icons/react'
+import { Lock, PushPinSlash } from '@phosphor-icons/react'
 import { useApp } from '../../state/store'
 import type { Subject } from '../../data/schema'
 import { MasterDot, PriorityChip, SourceChip, Tex, WeekChips } from '../../components/common'
@@ -8,12 +8,20 @@ export function ListView({ subject }: { subject: Subject }) {
   const mastered = useApp((s) => s.mastered)
   const toggleMastered = useApp((s) => s.toggleMastered)
   const weekFilter = useApp((s) => s.weekFilter)
+  const setWeekFilter = useApp((s) => s.setWeekFilter)
 
   const visibleWeeks = subject.weeks.filter((w) => weekFilter === 'all' || w.number === weekFilter)
 
   return (
     <div className="list-scroll scroll-glass">
       <div className="list-inner">
+        {weekFilter !== 'all' && (
+          <div className="filter-note">
+            <PushPinSlash size={14} />
+            <span>Showing Week {weekFilter} only. The saved filter in the top bar is why other weeks are hidden.</span>
+            <button className="btn btn--sm" onClick={() => setWeekFilter('all')}>Show all weeks</button>
+          </div>
+        )}
         {weekFilter === 'all' && (
           <>
             <section>

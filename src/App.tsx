@@ -1,5 +1,5 @@
 import { lazy, Suspense, useMemo, useRef } from 'react'
-import { Airplane, Flask, Gear, MagnifyingGlass, Question, Sun, Moon } from '@phosphor-icons/react'
+import { Airplane, Flask, Gear, MagnifyingGlass, Question, Sun, Moon, X } from '@phosphor-icons/react'
 import { useApp } from './state/store'
 import { getSubject } from './data/registry'
 import { search } from './services/search'
@@ -98,6 +98,11 @@ export default function App() {
               <option key={t.id} value={t.id}>{t.name}</option>
             ))}
           </select>
+          {weekFilter !== 'all' && (
+            <button className="filter-clear" onClick={() => setWeekFilter('all')} title="Show all weeks">
+              Week {weekFilter} only <X size={12} weight="bold" />
+            </button>
+          )}
         </div>
 
         <span className="toolbar__spacer" />
