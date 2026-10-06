@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AeroStudy — dark palette mockups</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;800&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ============ Shared component system (mirrors glass.css / app.css) ==== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; }
+  body {
+    font-family: 'Outfit', system-ui, sans-serif;
+    background: #0d0f13; color: #e8eaf0;
+    padding: 34px 20px 80px;
+  }
+  body::after {
+    content: ''; position: fixed; inset: 0; z-index: 50; pointer-events: none; opacity: 0.028;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .page-head { max-width: 1060px; margin: 0 auto 26px; }
+  .page-head h1 { font-family: 'Sora', sans-serif; font-size: 21px; font-weight: 800; letter-spacing: -0.01em; }
+  .page-head p { font-size: 13.5px; color: #9aa1ad; margin-top: 6px; line-height: 1.6; }
+  .page-head b { color: #e8eaf0; }
+
+  .demo { border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.07); margin-bottom: 34px; }
+  .demo-label {
+    display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+    padding: 14px 20px; background: rgba(255,255,255,0.04); border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .demo-label .tag { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 15px; }
+  .demo-label .why { font-size: 12.5px; color: #9aa1ad; line-height: 1.5; }
+
+  .canvas { padding: 26px 22px 30px; background: var(--canvas-bg); }
+
+  /* Components */
+  .hero {
+    border-radius: 20px; padding: 24px 26px;
+    background: var(--glass-bg-strong); border: 1px solid var(--glass-border-strong);
+    box-shadow: var(--glass-shadow), var(--glass-inner-strong);
+    outline: 1px solid var(--glass-border); outline-offset: 5px;
+    margin-bottom: 14px;
+  }
+  .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 8px; }
+  .h-title { font-family: 'Sora', sans-serif; font-size: 30px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-1); margin-bottom: 8px; }
+  .h-sub { font-size: 14px; color: var(--text-2); line-height: 1.6; margin-bottom: 18px; }
+  .cta { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px;
+    border-radius: 14px; border: 1px solid var(--glass-border);
+    background: var(--glass-bg-soft); color: var(--text-1);
+    font: 600 14px 'Outfit', sans-serif; cursor: pointer;
+  }
+  .btn--hero { background: var(--accent); border-color: transparent; color: var(--accent-ink); }
+  .btn--hero:hover { box-shadow: var(--glow); }
+
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+  .stat {
+    border-radius: 16px; padding: 14px 12px; text-align: center;
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow), var(--glass-inner);
+  }
+  .stat .num { font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 800; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .stat .lbl { font-size: 10.5px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-3); margin-top: 3px; }
+
+  .grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 12px; }
+  @media (max-width: 720px) { .grid, .stats { grid-template-columns: 1fr; } }
+  .card {
+    border-radius: 18px; padding: 18px 20px;
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow), var(--glass-inner);
+    outline: 1px solid var(--glass-border); outline-offset: 5px;
+  }
+  .section-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 10px; }
+  .card-title { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 16px; color: var(--text-1); margin-bottom: 8px; }
+  .formula {
+    border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 10px;
+    font-family: 'Sora', sans-serif; font-size: 17px; font-style: italic; color: var(--text-1);
+    background: var(--formula-bg); border: 1px solid var(--formula-border);
+  }
+  .hint { font-size: 12.5px; color: var(--text-3); }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 9px;
+    border-radius: 999px; font-size: 11.5px; font-weight: 600;
+    background: var(--chip-bg); color: var(--chip-text); border: 1px solid var(--glass-border);
+  }
+  .chip--core { background: var(--prio-core-soft); color: var(--prio-core); border-color: color-mix(in srgb, var(--prio-core) 35%, transparent); }
+  .chip--high { background: color-mix(in srgb, var(--prio-high) 14%, transparent); color: var(--prio-high); border-color: color-mix(in srgb, var(--prio-high) 35%, transparent); }
+  .chip--med  { background: color-mix(in srgb, var(--prio-medium) 12%, transparent); color: var(--prio-medium); border-color: color-mix(in srgb, var(--prio-medium) 30%, transparent); }
+  .rows { margin-top: 4px; }
+  .row { display: flex; align-items: center; gap: 10px; padding: 9px 2px; border-bottom: 1px solid var(--glass-border); font-size: 13.5px; color: var(--text-1); }
+  .row:last-child { border-bottom: none; }
+  .dot { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--text-3); flex-shrink: 0; }
+  .row .meta { margin-left: auto; display: flex; gap: 5px; }
+
+  /* ============ Palette tokens ========================================= */
+
+  /* CURRENT — for honest contrast */
+  [data-p="current"] {
+    --canvas-bg:
+      radial-gradient(900px 500px at 15% -10%, rgba(56,189,248,0.16) 0%, transparent 60%),
+      radial-gradient(800px 480px at 85% 10%, rgba(59,130,246,0.12) 0%, transparent 55%),
+      linear-gradient(180deg, #070c18 0%, #04060d 100%);
+    --glass-bg: rgba(13,20,40,0.58); --glass-bg-strong: rgba(11,17,36,0.84); --glass-bg-soft: rgba(18,27,52,0.36);
+    --glass-border: rgba(126,168,255,0.16); --glass-border-strong: rgba(126,168,255,0.30);
+    --glass-shadow: 0 10px 36px rgba(1,4,14,0.6), 0 2px 8px rgba(1,4,14,0.4);
+    --glass-inner: inset 0 1px 0 rgba(255,255,255,0.10); --glass-inner-strong: inset 0 1px 0 rgba(255,255,255,0.16);
+    --text-1: #f2f5ff; --text-2: rgba(224,232,255,0.74); --text-3: rgba(196,208,244,0.46);
+    --accent: #6ee7ff; --accent-ink: #04121f; --glow: 0 0 22px rgba(110,231,255,0.28);
+    --chip-bg: rgba(110,231,255,0.11); --chip-text: #9fdcff;
+    --prio-core: #7dd3fc; --prio-core-soft: rgba(125,211,252,0.12);
+    --prio-high: #fbbf24; --prio-medium: #94a3b8;
+    --formula-bg: linear-gradient(160deg, rgba(110,231,255,0.10), transparent 72%); --formula-border: rgba(110,231,255,0.25);
+  }
+
+  /* A — Cockpit graphite + instrument amber */
+  [data-p="cockpit"] {
+    --canvas-bg:
+      radial-gradient(1000px 600px at 18% -12%, rgba(255,171,77,0.05) 0%, transparent 55%),
+      radial-gradient(900px 560px at 82% 115%, rgba(255,255,255,0.03) 0%, transparent 60%),
+      linear-gradient(180deg, #131316 0%, #0b0b0d 100%);
+    --glass-bg: rgba(24,24,28,0.62); --glass-bg-strong: rgba(19,19,23,0.88); --glass-bg-soft: rgba(30,30,35,0.40);
+    --glass-border: rgba(255,255,255,0.09); --glass-border-strong: rgba(255,255,255,0.17);
+    --glass-shadow: 0 12px 36px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.4);
+    --glass-inner: inset 0 1px 0 rgba(255,255,255,0.07); --glass-inner-strong: inset 0 1px 0 rgba(255,255,255,0.12);
+    --text-1: #f2efe8; --text-2: rgba(235,230,220,0.72); --text-3: rgba(220,214,200,0.45);
+    --accent: #ffa94d; --accent-ink: #1c1204; --glow: 0 0 18px rgba(255,169,77,0.16);
+    --chip-bg: rgba(255,255,255,0.06); --chip-text: #cfc9bd;
+    --prio-core: #ffd28a; --prio-core-soft: rgba(255,210,138,0.10);
+    --prio-high: #fbbf24; --prio-medium: #9c978c;
+    --formula-bg: linear-gradient(160deg, rgba(255,169,77,0.07), transparent 70%); --formula-border: rgba(255,169,77,0.18);
+  }
+
+  /* B — Deep space, refined (identity kept, darkened, de-neoned, no glow) */
+  [data-p="deepspace"] {
+    --canvas-bg:
+      radial-gradient(900px 520px at 14% -10%, rgba(120,170,230,0.06) 0%, transparent 60%),
+      linear-gradient(180deg, #05070e 0%, #030408 100%);
+    --glass-bg: rgba(12,16,26,0.60); --glass-bg-strong: rgba(8,11,20,0.86); --glass-bg-soft: rgba(16,21,34,0.38);
+    --glass-border: rgba(160,190,230,0.11); --glass-border-strong: rgba(160,190,230,0.22);
+    --glass-shadow: 0 12px 34px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.4);
+    --glass-inner: inset 0 1px 0 rgba(255,255,255,0.06); --glass-inner-strong: inset 0 1px 0 rgba(255,255,255,0.10);
+    --text-1: #eef1f6; --text-2: rgba(226,231,240,0.70); --text-3: rgba(200,208,222,0.42);
+    --accent: #7cb8e8; --accent-ink: #071120; --glow: 0 0 0 rgba(0,0,0,0);
+    --chip-bg: rgba(124,184,232,0.09); --chip-text: #a9c8e4;
+    --prio-core: #a8cbe8; --prio-core-soft: rgba(168,203,232,0.10);
+    --prio-high: #e0b45c; --prio-medium: #8d99a8;
+    --formula-bg: linear-gradient(160deg, rgba(124,184,232,0.07), transparent 70%); --formula-border: rgba(124,184,232,0.16);
+  }
+
+  /* C — Blueprint navy (drafting-table blue, crisp linework) */
+  [data-p="blueprint"] {
+    --canvas-bg:
+      radial-gradient(1100px 620px at 20% -12%, rgba(103,232,249,0.06) 0%, transparent 55%),
+      linear-gradient(180deg, #0c1e3a 0%, #071426 100%);
+    --glass-bg: rgba(14,32,60,0.55); --glass-bg-strong: rgba(10,25,48,0.86); --glass-bg-soft: rgba(18,40,72,0.38);
+    --glass-border: rgba(150,214,240,0.17); --glass-border-strong: rgba(150,214,240,0.32);
+    --glass-shadow: 0 12px 34px rgba(2,8,18,0.6), 0 2px 8px rgba(2,8,18,0.45);
+    --glass-inner: inset 0 1px 0 rgba(255,255,255,0.08); --glass-inner-strong: inset 0 1px 0 rgba(255,255,255,0.13);
+    --text-1: #ecf5fc; --text-2: rgba(222,236,248,0.72); --text-3: rgba(190,214,234,0.45);
+    --accent: #8fe0f2; --accent-ink: #062030; --glow: 0 0 14px rgba(143,224,242,0.12);
+    --chip-bg: rgba(143,224,242,0.10); --chip-text: #a7e2f0;
+    --prio-core: #9fdcf0; --prio-core-soft: rgba(159,220,240,0.10);
+    --prio-high: #f4c268; --prio-medium: #93a9bd;
+    --formula-bg: linear-gradient(160deg, rgba(143,224,242,0.08), transparent 70%); --formula-border: rgba(143,224,242,0.20);
+  }
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <h1>AeroStudy dark-mode palette mockups</h1>
+  <p>Same real components, four token sets. <b>Current</b> is included for honest contrast.
+  Reply with <b>A</b>, <b>B</b>, or <b>C</b> (or "mix: X's background with Y's accent") and I'll wire it into the app.</p>
+</div>
+
+<!-- ================= CURRENT ================= -->
+<div class="demo" data-p="current">
+  <div class="demo-label"><span class="tag">Current</span>
+    <span class="why">Electric cyan glow on blue-black — the recipe that reads "AI dashboard".</span></div>
+  <div class="canvas">
+    <div class="hero">
+      <div class="eyebrow">RMIT University · 2-hour exam</div>
+      <div class="h-title">Introduction to Aerospace Engineering</div>
+      <div class="h-sub">45 formulas · 95 variables · 11 weeks. Everything examinable, one interactive web.</div>
+      <div class="cta"><button class="btn btn--hero">Explore the web</button><button class="btn">Ask the tutor</button><button class="btn">Test me</button></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="num">12%</div><div class="lbl">Course mastered</div></div>
+      <div class="stat"><div class="num">19</div><div class="lbl">of 159 items</div></div>
+      <div class="stat"><div class="num">1</div><div class="lbl">Quiz attempt</div></div>
+      <div class="stat"><div class="num">70%</div><div class="lbl">Best score</div></div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="section-label">Focus next</div>
+        <div class="card-title">Normal (axial) stress</div>
+        <div class="formula">σ = F / A</div>
+        <div class="hint">Week 5 &amp; 6 · core · click to open its window</div>
+        <div class="chips"><span class="chip">W5</span><span class="chip">W6</span><span class="chip chip--core">★ Core</span><span class="chip chip--high">High yield</span><span class="chip chip--med">Support</span></div>
+      </div>
+      <div class="card">
+        <div class="section-label">List rows</div>
+        <div class="rows">
+          <div class="row"><span class="dot"></span>Shear stress<span class="meta"><span class="chip chip--core">Core</span></span></div>
+          <div class="row"><span class="dot"></span>Euler column buckling<span class="meta"><span class="chip chip--high">High</span></span></div>
+          <div class="row"><span class="dot"></span>Shear modulus relation<span class="meta"><span class="chip chip--med">Support</span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= A ================= -->
+<div class="demo" data-p="cockpit">
+  <div class="demo-label"><span class="tag">A — Cockpit graphite + amber</span>
+    <span class="why">Neutral charcoal (zero blue), warm off-white text, one aviation-instrument amber. No colored glow. Kills the AI look hardest.</span></div>
+  <div class="canvas">
+    <div class="hero">
+      <div class="eyebrow">RMIT University · 2-hour exam</div>
+      <div class="h-title">Introduction to Aerospace Engineering</div>
+      <div class="h-sub">45 formulas · 95 variables · 11 weeks. Everything examinable, one interactive web.</div>
+      <div class="cta"><button class="btn btn--hero">Explore the web</button><button class="btn">Ask the tutor</button><button class="btn">Test me</button></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="num">12%</div><div class="lbl">Course mastered</div></div>
+      <div class="stat"><div class="num">19</div><div class="lbl">of 159 items</div></div>
+      <div class="stat"><div class="num">1</div><div class="lbl">Quiz attempt</div></div>
+      <div class="stat"><div class="num">70%</div><div class="lbl">Best score</div></div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="section-label">Focus next</div>
+        <div class="card-title">Normal (axial) stress</div>
+        <div class="formula">σ = F / A</div>
+        <div class="hint">Week 5 &amp; 6 · core · click to open its window</div>
+        <div class="chips"><span class="chip">W5</span><span class="chip">W6</span><span class="chip chip--core">★ Core</span><span class="chip chip--high">High yield</span><span class="chip chip--med">Support</span></div>
+      </div>
+      <div class="card">
+        <div class="section-label">List rows</div>
+        <div class="rows">
+          <div class="row"><span class="dot"></span>Shear stress<span class="meta"><span class="chip chip--core">Core</span></span></div>
+          <div class="row"><span class="dot"></span>Euler column buckling<span class="meta"><span class="chip chip--high">High</span></span></div>
+          <div class="row"><span class="dot"></span>Shear modulus relation<span class="meta"><span class="chip chip--med">Support</span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= B ================= -->
+<div class="demo" data-p="deepspace">
+  <div class="demo-label"><span class="tag">B — Deep space, refined</span>
+    <span class="why">Keeps the navy identity but darker, flatter, less saturated; calm sky accent; glow removed entirely. Safest evolution.</span></div>
+  <div class="canvas">
+    <div class="hero">
+      <div class="eyebrow">RMIT University · 2-hour exam</div>
+      <div class="h-title">Introduction to Aerospace Engineering</div>
+      <div class="h-sub">45 formulas · 95 variables · 11 weeks. Everything examinable, one interactive web.</div>
+      <div class="cta"><button class="btn btn--hero">Explore the web</button><button class="btn">Ask the tutor</button><button class="btn">Test me</button></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="num">12%</div><div class="lbl">Course mastered</div></div>
+      <div class="stat"><div class="num">19</div><div class="lbl">of 159 items</div></div>
+      <div class="stat"><div class="num">1</div><div class="lbl">Quiz attempt</div></div>
+      <div class="stat"><div class="num">70%</div><div class="lbl">Best score</div></div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="section-label">Focus next</div>
+        <div class="card-title">Normal (axial) stress</div>
+        <div class="formula">σ = F / A</div>
+        <div class="hint">Week 5 &amp; 6 · core · click to open its window</div>
+        <div class="chips"><span class="chip">W5</span><span class="chip">W6</span><span class="chip chip--core">★ Core</span><span class="chip chip--high">High yield</span><span class="chip chip--med">Support</span></div>
+      </div>
+      <div class="card">
+        <div class="section-label">List rows</div>
+        <div class="rows">
+          <div class="row"><span class="dot"></span>Shear stress<span class="meta"><span class="chip chip--core">Core</span></span></div>
+          <div class="row"><span class="dot"></span>Euler column buckling<span class="meta"><span class="chip chip--high">High</span></span></div>
+          <div class="row"><span class="dot"></span>Shear modulus relation<span class="meta"><span class="chip chip--med">Support</span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= C ================= -->
+<div class="demo" data-p="blueprint">
+  <div class="demo-label"><span class="tag">C — Blueprint navy</span>
+    <span class="why">Engineering-drawing blue with pale drafting-cyan linework. More thematic; borders read as drawn lines.</span></div>
+  <div class="canvas">
+    <div class="hero">
+      <div class="eyebrow">RMIT University · 2-hour exam</div>
+      <div class="h-title">Introduction to Aerospace Engineering</div>
+      <div class="h-sub">45 formulas · 95 variables · 11 weeks. Everything examinable, one interactive web.</div>
+      <div class="cta"><button class="btn btn--hero">Explore the web</button><button class="btn">Ask the tutor</button><button class="btn">Test me</button></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="num">12%</div><div class="lbl">Course mastered</div></div>
+      <div class="stat"><div class="num">19</div><div class="lbl">of 159 items</div></div>
+      <div class="stat"><div class="num">1</div><div class="lbl">Quiz attempt</div></div>
+      <div class="stat"><div class="num">70%</div><div class="lbl">Best score</div></div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="section-label">Focus next</div>
+        <div class="card-title">Normal (axial) stress</div>
+        <div class="formula">σ = F / A</div>
+        <div class="hint">Week 5 &amp; 6 · core · click to open its window</div>
+        <div class="chips"><span class="chip">W5</span><span class="chip">W6</span><span class="chip chip--core">★ Core</span><span class="chip chip--high">High yield</span><span class="chip chip--med">Support</span></div>
+      </div>
+      <div class="card">
+        <div class="section-label">List rows</div>
+        <div class="rows">
+          <div class="row"><span class="dot"></span>Shear stress<span class="meta"><span class="chip chip--core">Core</span></span></div>
+          <div class="row"><span class="dot"></span>Euler column buckling<span class="meta"><span class="chip chip--high">High</span></span></div>
+          <div class="row"><span class="dot"></span>Shear modulus relation<span class="meta"><span class="chip chip--med">Support</span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
